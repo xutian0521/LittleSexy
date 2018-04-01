@@ -42,6 +42,7 @@ namespace LittleSexy.Api
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:5008").AllowAnyHeader()
                 );
