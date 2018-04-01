@@ -33,6 +33,7 @@ namespace LittleSexy.Api
         {
             if (env.IsDevelopment())
             {
+
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
