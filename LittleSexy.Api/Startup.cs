@@ -40,7 +40,7 @@ namespace LittleSexy.Api
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Values}/{action=Get}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:5008").AllowAnyHeader()
