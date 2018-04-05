@@ -12,6 +12,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LittleSexy.Common\LittleSexy.Common.csproj" />
+    <ProjectReference Include="..\LittleSexy.Model\LittleSexy.Model.csproj" />
+    <ProjectReference Include="..\LittleSexy.Service\LittleSexy.Service.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties Properties_4launchSettings_1json__JSONSchema="http://json-schema.org/draft-04/schema" /></VisualStudio></ProjectExtensions>

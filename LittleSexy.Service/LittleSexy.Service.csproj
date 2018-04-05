@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LittleSexy.DAL\LittleSexy.DAL.csproj" />
+    <ProjectReference Include="..\LittleSexy.Model\LittleSexy.Model.csproj" />
+  </ItemGroup>
+
+</Project>

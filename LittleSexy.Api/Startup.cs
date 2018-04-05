@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Cors;
+using System.Reflection;
+using LittleSexy.Common;
 
 namespace LittleSexy.Api
 {
@@ -26,6 +28,17 @@ namespace LittleSexy.Api
         {
             services.AddMvc();
             services.AddCors();
+            List<Assembly> listAsb = new List<Assembly>();
+            listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.Service")));
+            listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.DAL")));
+            foreach (Assembly asb in listAsb)
+            {
+                foreach (var item in asb.GetTypes().Where(t => !t.IsAbstract && 
+                    t.IsDefined(typeof(InjectAttribute))))
+                {
+                    services.AddSingleton(item);
+                }
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +46,7 @@ namespace LittleSexy.Api
         {
             if (env.IsDevelopment())
             {
+
 
                 app.UseDeveloperExceptionPage();
             }
