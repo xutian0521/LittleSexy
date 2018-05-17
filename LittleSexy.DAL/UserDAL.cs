@@ -13,7 +13,7 @@ namespace LittleSexy.DAL
     {
         public async Task<IEnumerable<t_User>> GetDataUserListAsync()
         {
-            var row= await DB.Conn().ExecuteAsync("insert into LittleSexy.t_User(UserName,PassWord,IsDeleted,CreateDateTime,Remark) values('zs','123',0,'2018-4-6 00:37:53','zs11'); ");
+            //var row= await DB.Conn().ExecuteAsync("insert into LittleSexy.t_User(UserName,PassWord,IsDeleted,CreateDateTime,Remark) values('zs','123',0,'2018-4-6 00:37:53','zs11'); ");
             var listData= await DB.Conn().QueryAsync<t_User>("SELECT * FROM LittleSexy.t_User;");
             return listData;
         }

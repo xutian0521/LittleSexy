@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Cors;
 using System.Reflection;
 using LittleSexy.Common;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace LittleSexy.Api
 {
@@ -28,6 +29,7 @@ namespace LittleSexy.Api
         {
             services.AddMvc();
             services.AddCors();
+        
             List<Assembly> listAsb = new List<Assembly>();
             listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.Service")));
             listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.DAL")));
@@ -50,6 +52,10 @@ namespace LittleSexy.Api
 
                 app.UseDeveloperExceptionPage();
             }
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {
