@@ -87,7 +87,7 @@
                 console.log('hello,world')
                 let _self = this;
 
-                axios.get('http://localhost:5008/Page/GetPageContent?pageId=1')
+                axios.get('/Page/GetPageContent?pageId=1')
                     .then(function (response) {
                         //debugger;
 
@@ -138,7 +138,7 @@
             init() {
                 let _self = this;
 
-                axios.get('http://localhost:5008/Page/GetPageImages?pageId=1')
+                axios.get('/Page/GetPageImages?pageId=1')
                     .then(function (response) {
                         //debugger;
 
