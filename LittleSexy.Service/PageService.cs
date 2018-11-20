@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using LittleSexy.DAL;
 using System.Threading.Tasks;
 using LittleSexy.Model.ViewModel;
+using Microsoft.Extensions.Configuration;
 
 namespace LittleSexy.Service
 {
@@ -26,6 +27,11 @@ namespace LittleSexy.Service
         public async Task<IEnumerable<v_PageImages>> GetPageImagesByPageIdAsync(int pageId)
         {
             var list = await _pageDAL.GetDataPageImagesByPageIdAsync(pageId);
+            string ossHost =JsonConfigurationHelper.GetAppSettings("osshost");
+            foreach (var item in list)
+            {
+                item.ImagePath = ossHost + item.ImagePath;
+            }
             return list;
         }
     }

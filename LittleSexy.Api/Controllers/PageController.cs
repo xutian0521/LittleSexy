@@ -12,9 +12,9 @@ namespace LittleSexy.Api.Controllers
     public class PageController : Controller
     {
         protected PageService _pageService;
-        public PageController(IServiceProvider service)
+        public PageController(PageService pageService)
         {
-            _pageService = service.GetService<PageService>();
+            _pageService = pageService;
         }
         public async Task<ApiResult> GetPageContent(int pageId)
         {
