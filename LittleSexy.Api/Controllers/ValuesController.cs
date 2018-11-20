@@ -6,40 +6,43 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LittleSexy.Api.Controllers
 {
-    //[Route("[controller]")]
-    public class ValuesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ValuesController : ControllerBase
     {
         // GET api/values
-        //[HttpGet]
-        public IEnumerable<string> Gets()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5
-        [HttpGet]
-        public string Get(int id)
+        [HttpGet("{id}")]
+        public ActionResult<string> Get(int id)
         {
-            var ip= HttpContext.Request.Host;
-            return "Hello ! Wellcome to little sexy";
+            return "value";
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post()
         {
+            Response.StatusCode=201;
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
+            Response.StatusCode=201;
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            Response.StatusCode=204;
         }
     }
 }

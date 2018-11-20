@@ -20,7 +20,7 @@ namespace LittleSexy.Api.Controllers
         [HttpGet("{tab}")]
         public async Task<ApiResult> Get(string tab)
         {
-            var list = await _pageService.GetPageContentPageIdAsync(tab);
+            var list = await _pageService.GetPageContentFormTabAsync(tab);
             ApiResult result = new ApiResult();
             result.Code = 200;
             result.Message = "成功";

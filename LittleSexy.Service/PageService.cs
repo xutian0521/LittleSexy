@@ -19,7 +19,7 @@ namespace LittleSexy.Service
         {
             _pageDAL = service.GetService<PageDAL>();
         }
-        public async Task<t_Page> GetPageContentPageIdAsync(string  tab)
+        public async Task<t_Page> GetPageContentFormTabAsync(string  tab)
         {
             int pageId=1;
             switch (tab)

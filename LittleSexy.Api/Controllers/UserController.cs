@@ -9,18 +9,27 @@ using LittleSexy.Service;
 
 namespace LittleSexy.Api.Controllers
 {
-    public class UserController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
         protected UserService _userService;
         public UserController(IServiceProvider service)
         {
             _userService = service.GetService<UserService>();
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [HttpGet]
         public async Task<ApiResult> ListAsync()
+        {
+            var list= await _userService.GetUserListAsync();
+            ApiResult result = new ApiResult();
+            result.Code = 200;
+            result.Message = "成功";
+            result.Content = list;
+            return result;
+        }
+        [HttpPost]
+        public async Task<ApiResult> Add()
         {
             var list= await _userService.GetUserListAsync();
             ApiResult result = new ApiResult();

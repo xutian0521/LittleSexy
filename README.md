@@ -15,7 +15,7 @@
 4. restful api
 5. git flow
 6. redis (CSRedis)-做缓存, 点赞, 热点评论排序
-7. mongodb -社区发帖
+7. mongodb -社区发帖 -tab页面信息
 
 #### 后台管理系统前端
 1. ant design
