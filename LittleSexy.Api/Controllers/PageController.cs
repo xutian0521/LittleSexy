@@ -1,5 +1,4 @@
 ﻿using System;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,16 +8,19 @@ using Microsoft.Extensions.DependencyInjection;
 using LittleSexy.Service;
 namespace LittleSexy.Api.Controllers
 {
-    public class PageController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PageController : ControllerBase
     {
         protected PageService _pageService;
         public PageController(PageService pageService)
         {
             _pageService = pageService;
         }
-        public async Task<ApiResult> GetPageContent(int pageId)
+        [HttpGet("{tab}")]
+        public async Task<ApiResult> Get(string tab)
         {
-            var list = await _pageService.GetPageContentPageIdAsync(pageId);
+            var list = await _pageService.GetPageContentPageIdAsync(tab);
             ApiResult result = new ApiResult();
             result.Code = 200;
             result.Message = "成功";
