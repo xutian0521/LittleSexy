@@ -25,8 +25,10 @@ namespace LittleSexy.Api.Controllers
             result.Code = 200;
             result.Message = "成功";
             result.Content = list;
+            Response.StatusCode= 200;
             return result;
         }
+        [HttpGet("Images")]
         public async Task<ApiResult> GetPageImages(int pageId)
         {
             var list = await _pageService.GetPageImagesByPageIdAsync(pageId);
@@ -34,6 +36,7 @@ namespace LittleSexy.Api.Controllers
             result.Code = 200;
             result.Message = "成功";
             result.Content = list;
+            Response.StatusCode= 200;
             return result;
         }
 
