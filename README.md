@@ -6,10 +6,10 @@
 3. axios
 4. CDN
 5. SEO
-
+6. Chimee --H5视频播放器组件
 #### 前端页面Api
 
-1. mysql
+1. mysql 用户信息关系数据库，所有电影列表信息，瀑布流图片用mongodb
 2. oss
 3. DI
 4. restful api

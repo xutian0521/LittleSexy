@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Movies</title>
+</head>
+<body>
+    <div id="app">
+        <template>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="date" label="日期" width="180">
+                </el-table-column>
+                <el-table-column prop="name" label="名称" width="180">
+                </el-table-column>
+                <el-table-column prop="address" label="连接">
+                </el-table-column>
+            </el-table>
+            </template>
+    </div>
+            
+</body>
+</html>
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.1/index.js"></script>
+
+<script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="js/Movies.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.1/theme-chalk/index.css" rel="stylesheet">
+<link href="css/site.css">
