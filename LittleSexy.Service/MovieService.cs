@@ -15,6 +15,7 @@ namespace LittleSexy.Service
     [Inject]
     public class MovieService
     {
+        //todo:业务层改用多个实例
         public IConfiguration Configuration { get; }
         protected PageDAL _pageDAL;
         public MovieService(IServiceProvider service,IConfiguration configuration)
@@ -26,6 +27,8 @@ namespace LittleSexy.Service
         {
             ApiResult result=new ApiResult();
             string movieRootPath = Configuration.GetSection("movieRootPath").Value;
+            string movieHttpUrl = Configuration.GetSection("movieHttpUrl").Value;
+            
             List<FileInfo> fileList = new List<FileInfo>();
             if(Directory.Exists(movieRootPath))
             {
@@ -34,7 +37,7 @@ namespace LittleSexy.Service
             }
             else
             {
-                return new ApiResult(-1, @"没找到磁盘上[H:\ftp]的目录");
+                return new ApiResult(-1, $@"没找到磁盘上{movieRootPath}的目录");
             }
             List<v_Movie> movieLists=new List<v_Movie>();
             foreach (var item in fileList)
@@ -42,8 +45,10 @@ namespace LittleSexy.Service
                 v_Movie movie=new v_Movie();
                 movie.Title =Path.GetFileName(item.FullName);
                 movie.FanHao=item.FullName.Split('_')[1];
-                movie.LinkUrl ="movieDetail.html?src=" + System.Net.WebUtility.UrlEncode(item.FullName);
-                movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh-mm-ss");
+                //movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode(movieHttpUrl+item.FullName);
+                movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode("https://vjs.zencdn.net/v/oceans.webm");
+                
+                movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
                 movieLists.Add(movie);
             }
             result.Content= movieLists;

@@ -7,17 +7,32 @@
     <title>Movies</title>
 </head>
 <body>
+    <!-- <div id="app" >
+        <div v-for="item in movieList">
+            <div><a :href="item.linkUrl">{{item.title}}</a></div> 
+        </div>
+
+    </div> -->
     <div id="app">
-        <template>
-            <el-table :data="movieList" style="width: 100%">
-                <el-table-column prop="fanHao" label="番号" width="180">
-                </el-table-column>
-                <el-table-column prop="title" label="名称" width="180">
-                </el-table-column>
-                <el-table-column prop="date" label="日期">
-                </el-table-column>
-            </el-table>
-            </template>
+        <el-card shadow="hover">
+            <el-row>
+                <el-col :span="6" v-for="item in movieList"  style="padding:10px">
+                <el-card :body-style="{ padding: '10px' }" shadow="always">
+                    <img src="/images/hamburger.50e4091.png" class="image">
+                    <div style="padding: 14px;">
+                    <span>好吃的汉堡</span>
+                    <div class="bottom clearfix">
+                        <time class="time">{{item.date}}</time>
+                        <a :href="item.linkUrl">
+                            <el-button type="text" class="button">操作按钮</el-button>
+                        </a>
+                    </div>
+                    </div>
+                </el-card>
+                </el-col>
+            </el-row>
+        </el-card>
+
     </div>
             
 </body>
@@ -31,3 +46,34 @@
 <script src="js/Movies.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.1/theme-chalk/index.css" rel="stylesheet">
 <link href="css/site.css">
+<style>
+        .time {
+          font-size: 13px;
+          color: #999;
+        }
+        
+        .bottom {
+          margin-top: 13px;
+          line-height: 12px;
+        }
+      
+        .button {
+          padding: 0;
+          float: right;
+        }
+      
+        .image {
+          width: 100%;
+          display: block;
+        }
+      
+        .clearfix:before,
+        .clearfix:after {
+            display: table;
+            content: "";
+        }
+        
+        .clearfix:after {
+            clear: both
+        }
+      </style>

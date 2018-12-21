@@ -41,6 +41,12 @@ namespace LittleSexy.Api
                     services.AddSingleton(item);
                 }
             }
+            //test,Desktop computer,aliyun
+            string environment= Configuration.GetSection("environment").Value;
+            if(environment =="test")
+            {
+                services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.MovieService));
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
