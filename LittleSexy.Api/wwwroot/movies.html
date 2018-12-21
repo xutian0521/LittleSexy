@@ -9,12 +9,12 @@
 <body>
     <div id="app">
         <template>
-            <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="date" label="日期" width="180">
+            <el-table :data="movieList" style="width: 100%">
+                <el-table-column prop="fanHao" label="番号" width="180">
                 </el-table-column>
-                <el-table-column prop="name" label="名称" width="180">
+                <el-table-column prop="title" label="名称" width="180">
                 </el-table-column>
-                <el-table-column prop="address" label="连接">
+                <el-table-column prop="date" label="日期">
                 </el-table-column>
             </el-table>
             </template>

@@ -20,9 +20,7 @@ namespace LittleSexy.Api.Controllers
         [HttpGet("List")]
         public async Task<ApiResult> List()
         {
-            var list = await _service.GetMoviesListAsync();
-            ApiResult result = new ApiResult();
-            result.Content = list;
+            var result = await _service.GetMoviesListAsync();
             Response.StatusCode= 200;
             return result;
         }

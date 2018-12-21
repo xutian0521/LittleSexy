@@ -34,7 +34,7 @@
                 console.log('hello,world')
                 let _self = this;
 
-                axios.get('api/page/index')
+                axios.get('api/Page/Index')
                     .then(function (response) {
                         //debugger;
 
