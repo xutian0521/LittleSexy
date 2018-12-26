@@ -43,10 +43,20 @@ namespace LittleSexy.Api
             }
             //test,Desktop computer,aliyun
             string environment= Configuration.GetSection("environment").Value;
-            if(environment =="test")
+            switch (environment)
             {
-                services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.MovieService));
+                default:
+                case "test":
+                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                break;
+                case "mypc":
+                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                break;
+                case "aliyun":
+                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                break;
             }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

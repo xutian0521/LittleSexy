@@ -6,14 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using LittleSexy.Common;
 using Microsoft.Extensions.DependencyInjection;
 using LittleSexy.Service;
+using LittleSexy.Service.Interface;
+
 namespace LittleSexy.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
     {
-        protected MovieService _service;
-        public MovieController(MovieService movieService)
+        protected IMovieService _service;
+        public MovieController(IMovieService movieService)
         {
             _service = movieService;
         }

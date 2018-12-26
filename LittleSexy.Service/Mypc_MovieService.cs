@@ -9,17 +9,16 @@ using System.Threading.Tasks;
 using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Service
 {
     [Inject]
-    public class Test_MovieService: IMovieService
+    public class Mypc_MovieService
     {
         //todo:业务层改用多个实例
         public IConfiguration Configuration { get; }
         protected PageDAL _pageDAL;
-        public Test_MovieService(IServiceProvider service,IConfiguration configuration)
+        public Mypc_MovieService(IServiceProvider service,IConfiguration configuration)
         {
             _pageDAL = service.GetService<PageDAL>();
             Configuration = configuration;
@@ -41,17 +40,7 @@ namespace LittleSexy.Service
                 return new ApiResult(-1, $@"没找到磁盘上{movieRootPath}的目录");
             }
             List<v_Movie> movieLists=new List<v_Movie>();
-            foreach (var item in fileList)
-            {
-                v_Movie movie=new v_Movie();
-                movie.Title =Path.GetFileName(item.FullName);
-                movie.FanHao=item.FullName.Split('_')[1];
-                //movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode(movieHttpUrl+item.FullName);
-                movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode("https://vjs.zencdn.net/v/oceans.webm");
-                movie.Cover = "/images/hamburger.50e4091.png";
-                movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
-                movieLists.Add(movie);
-            }
+
             result.Content= movieLists;
             return result;
         }

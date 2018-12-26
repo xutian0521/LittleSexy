@@ -4,7 +4,9 @@
 var vueMovieList=new Vue({
   el:'#app',
   data:{
-    movieList:[]
+    movieList:[],
+    total:'0',
+    currentPage: 4
   },        
   mounted() {
     this.init()
@@ -25,8 +27,15 @@ var vueMovieList=new Vue({
 
               console.log(error);
           });
+    },      
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
+  
 });
 // var Ctor = Vue.extend(Main)
 vueMovieList.$mount('#app');
