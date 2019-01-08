@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Cors;
 using System.Reflection;
 using LittleSexy.Common;
 using Microsoft.AspNetCore.HttpOverrides;
+using LittleSexy.Service;
+using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Api
 {
@@ -47,13 +49,13 @@ namespace LittleSexy.Api
             {
                 default:
                 case "test":
-                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
                 break;
                 case "mypc":
-                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
                 break;
                 case "aliyun":
-                    services.AddSingleton(typeof(Service.Interface.IMovieService),typeof(Service.Test_MovieService));
+                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
                 break;
             }
 

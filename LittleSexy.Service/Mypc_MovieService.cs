@@ -40,7 +40,17 @@ namespace LittleSexy.Service
                 return new ApiResult(-1, $@"没找到磁盘上{movieRootPath}的目录");
             }
             List<v_Movie> movieLists=new List<v_Movie>();
-
+            foreach (var item in fileList)
+            {
+                v_Movie movie=new v_Movie();
+                movie.Title =Path.GetFileName(item.FullName);
+                movie.FanHao=item.FullName.Split('_')[1];
+                //movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode(movieHttpUrl+item.FullName);
+                movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode("https://vjs.zencdn.net/v/oceans.webm");
+                movie.Cover = "/images/hamburger.50e4091.png";
+                movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                movieLists.Add(movie);
+            }
             result.Content= movieLists;
             return result;
         }
@@ -53,8 +63,9 @@ namespace LittleSexy.Service
             {
                 var ext= Path.GetExtension( files[i].FullName);
                 if(ext ==".webm" || ext == ".mp4")
+                {
                     fileList.Add(files[i]);
-
+                }
             }
             for (int i = 0; i < dirs.Length; i++)
             {
