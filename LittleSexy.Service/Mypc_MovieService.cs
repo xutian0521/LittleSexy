@@ -9,63 +9,90 @@ using System.Threading.Tasks;
 using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Service
 {
     [Inject]
-    public class Mypc_MovieService
+    public class Mypc_MovieService: IMovieService
     {
         //todo:业务层改用多个实例
         public IConfiguration Configuration { get; }
         protected PageDAL _pageDAL;
+        protected MovieDAL _movieDAL;
         public Mypc_MovieService(IServiceProvider service,IConfiguration configuration)
         {
             _pageDAL = service.GetService<PageDAL>();
+            _movieDAL=service.GetService<MovieDAL>();
             Configuration = configuration;
         }
-        public async Task<ApiResult> GetMoviesListAsync()
+        public async Task<ApiResult> UpdateMoviesListAsync()
         {
             ApiResult result=new ApiResult();
             string movieRootPath = Configuration.GetSection("movieRootPath").Value;
-            string movieHttpUrl = Configuration.GetSection("movieHttpUrl").Value;
-            
-            List<FileInfo> fileList = new List<FileInfo>();
+            List<List<FileInfo>> fileList = new List<List<FileInfo>>();
             if(Directory.Exists(movieRootPath))
             {
                 this.GetAllDir(movieRootPath, ref fileList);
-
             }
             else
             {
                 return new ApiResult(-1, $@"没找到磁盘上{movieRootPath}的目录");
             }
-            List<v_Movie> movieLists=new List<v_Movie>();
-            foreach (var item in fileList)
+            List<t_Movie> movieLists=new List<t_Movie>();
+            foreach (var itemOnes in fileList)
             {
-                v_Movie movie=new v_Movie();
-                movie.Title =Path.GetFileName(item.FullName);
-                movie.FanHao=item.FullName.Split('_')[1];
-                //movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode(movieHttpUrl+item.FullName);
-                movie.LinkUrl = "movieDetail.html?src=" + System.Net.WebUtility.UrlEncode("https://vjs.zencdn.net/v/oceans.webm");
-                movie.Cover = "/images/hamburger.50e4091.png";
-                movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                t_Movie movie=new t_Movie();
+                foreach (var item in itemOnes)
+                {
+                    var ext= Path.GetExtension( item.FullName);
+                    if(ext ==".mp4" || ext == ".webm")
+                    {
+                        movie.Title =Path.GetFileName(item.FullName);
+                        movie.FanHao=item.FullName.Split('_')[1];
+                        movie.Source = Path.GetFileName(item.FullName);
+
+                        movie.CreationTime = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                    }
+                    if(ext == ".jpg" || ext == ".png")
+                    {
+                        movie.Cover = "/" + movie.FanHao + ".jpg";
+                    }
+                }
                 movieLists.Add(movie);
             }
+            int row= await _movieDAL.InsertMovieListAsync(movieLists);
             result.Content= movieLists;
             return result;
         }
-        public  void GetAllDir(string dir1,ref List<FileInfo> fileList)
+        public async Task<ApiResult> GetMoviesListAsync()
+        {
+            ApiResult result=new ApiResult();
+            List<v_Movie> movieLists=new List<v_Movie>();
+
+            result.Content= movieLists;
+            return result;
+        }
+        public  void GetAllDir(string dir1,ref List<List<FileInfo>> fileList)
         {
             DirectoryInfo dir = new DirectoryInfo(dir1);
             var files = dir.GetFiles();
             var dirs =dir.GetDirectories();
+            
             for (int i = 0; i < files.Length; i++)
             {
+                List<FileInfo> ones=new List<FileInfo>();
                 var ext= Path.GetExtension( files[i].FullName);
+                if(ext == ".jpg" || ext == ".png")
+                {
+                    ones.Add(files[i]);
+                }
                 if(ext ==".webm" || ext == ".mp4")
                 {
-                    fileList.Add(files[i]);
+                    ones.Add(files[i]);
+                    fileList.Add(ones);
                 }
+
             }
             for (int i = 0; i < dirs.Length; i++)
             {

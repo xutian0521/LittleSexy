@@ -1,12 +1,17 @@
 ``` cs
 GET         /zoos：列出所有动物园
-POST        /zoos：新建一个动物园
+POST        /zoos：新建一个动物园 
 GET         /zoos/ID：获取某个指定动物园的信息
-PUT         /zoos/ID：更新某个指定动物园的信息（提供该动物园的全部信息）
+PUT         /zoos/ID：更新某个指定动物园的信息（提供该动物园的全部信息） 
 PATCH       /zoos/ID：更新某个指定动物园的信息（提供该动物园的部分信息）
 DELETE      /zoos/ID：删除某个动物园
 GET         /zoos/ID/animals：列出某个指定动物园的所有动物
 DELETE      /zoos/ID/animals/ID：删除某个指定动物园的指定动物
+```
+``` cs
+Post  //是非幂等的,多次提交会服务端结果会不相等, 服务器添加新资源, 相当于add
+Put  //是幂等的, 多次提交会替换掉上一次的资源, 服务器资源不变
+Patch //也是非幂等的, 是补充Put 请求的, Put是替换所有资源, Patch 是修改局部资源
 ```
 ```
 ?limit=10：指定返回记录的数量

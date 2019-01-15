@@ -78,6 +78,11 @@ namespace LittleSexy.Service
                 Console.WriteLine(fileList[i]);
             }
         }
+
+        public Task<ApiResult> UpdateMoviesListAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

@@ -2,20 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LittleSexy.Model.ViewModel
+namespace LittleSexy.Model.DBModel
 {
-    public class v_Movie
+    public class t_Movie : DBEntityBase
     {
         /// <summary>
         /// 标题
         /// </summary>
         /// <value></value>
         public string Title { get; set; }
-        /// <summary>
-        /// 详情页跳转地址
-        /// </summary>
-        /// <value></value>
-        public string LinkUrl { get; set; }
+
         /// <summary>
         /// 源
         /// </summary>
@@ -26,16 +22,16 @@ namespace LittleSexy.Model.ViewModel
         /// </summary>
         /// <value></value>
         public string FanHao { get; set; }
-        /// <summary>
-        /// 日期
-        /// </summary>
-        /// <value></value>
-        public string Date { get; set; }
+
         /// <summary>
         /// 封面
         /// </summary>
         /// <value></value>
         public string Cover {get;set;}
-
+        /// <summary>
+        /// 电影文件创建时间
+        /// </summary>
+        /// <value></value>
+        public string CreationTime { get; set; }
     }
 }

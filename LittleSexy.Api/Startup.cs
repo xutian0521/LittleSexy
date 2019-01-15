@@ -52,10 +52,10 @@ namespace LittleSexy.Api
                     services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
                 break;
                 case "mypc":
-                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
+                    services.AddSingleton(typeof(IMovieService),typeof(Mypc_MovieService));
                 break;
                 case "aliyun":
-                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
+                    services.AddSingleton(typeof(IMovieService),typeof(Aliyun_MovieService));
                 break;
             }
 
