@@ -32,6 +32,6 @@ namespace LittleSexy.Model.DBModel
         /// 电影文件创建时间
         /// </summary>
         /// <value></value>
-        public string CreationTime { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

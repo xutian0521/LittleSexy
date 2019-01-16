@@ -24,7 +24,7 @@ namespace LittleSexy.Service
             _pageDAL = service.GetService<PageDAL>();
             Configuration = configuration;
         }
-        public async Task<ApiResult> GetMoviesListAsync()
+        public async Task<ApiResult> GetMoviesListAsync(int pageIndex, int pageSize)
         {
             ApiResult result=new ApiResult();
             string movieRootPath = Configuration.GetSection("movieRootPath").Value;

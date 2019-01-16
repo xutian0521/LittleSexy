@@ -19,7 +19,7 @@ namespace LittleSexy.Service.Interface
         /// 获取电影列表
         /// </summary>
         /// <returns></returns>
-        Task<ApiResult> GetMoviesListAsync();
+        Task<ApiResult> GetMoviesListAsync(int pageIndex, int pageSize);
         Task<ApiResult> UpdateMoviesListAsync();
     }
 

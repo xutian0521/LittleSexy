@@ -52,7 +52,7 @@ namespace LittleSexy.Service
                         movie.FanHao=item.FullName.Split('_')[1];
                         movie.Source = Path.GetFileName(item.FullName);
 
-                        movie.CreationTime = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                        movie.CreationTime = item.CreationTime;
                     }
                     if(ext == ".jpg" || ext == ".png")
                     {
@@ -65,11 +65,23 @@ namespace LittleSexy.Service
             result.Content= movieLists;
             return result;
         }
-        public async Task<ApiResult> GetMoviesListAsync()
+        public async Task<ApiResult> GetMoviesListAsync(int pageIndex, int pageSize)
         {
+            string movieRootPath = Configuration.GetSection("movieRootPath").Value;
             ApiResult result=new ApiResult();
             List<v_Movie> movieLists=new List<v_Movie>();
-
+            IEnumerable<t_Movie> lsMovie= await _movieDAL.GetMovieListAsync(pageIndex, pageSize);
+            foreach (var item in lsMovie)
+            {
+                v_Movie model=new v_Movie();
+                model.Title= item.Title;
+                model.FanHao = item.FanHao;
+                model.Cover = item.Cover;
+                model.LinkUrl = "movieDetail?Id=" +item.Id;
+                model.Source = movieRootPath+ item.Source;
+                model.Date =item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                movieLists.Add(model);
+            }
             result.Content= movieLists;
             return result;
         }
