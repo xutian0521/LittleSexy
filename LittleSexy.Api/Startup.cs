@@ -74,17 +74,14 @@ namespace LittleSexy.Api
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+            app.UseMiddleware<BasicMiddleWare>();
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
-            
-            app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:5008").AllowAnyHeader()
-                );
+            }); 
         }
     }
 }
