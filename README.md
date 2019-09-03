@@ -17,6 +17,7 @@
 5. git flow
 6. redis (CSRedis)-做缓存, 点赞, 热点评论排序
 7. mongodb -社区发帖 -tab页面信息
+8. CDN(静态文件图片等使用 图片接口 或者阿里云oss)
 
 #### 后台管理系统前端
 1. ant design
