@@ -45,19 +45,19 @@ namespace LittleSexy.Api
             }
             //test,Desktop computer,aliyun
             string environment= Configuration.GetSection("environment").Value;
-            switch (environment)
-            {
-                default:
-                case "test":
-                    services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
-                break;
-                case "mypc":
-                    services.AddSingleton(typeof(IMovieService),typeof(Mypc_MovieService));
-                break;
-                case "aliyun":
-                    services.AddSingleton(typeof(IMovieService),typeof(Aliyun_MovieService));
-                break;
-            }
+            // switch (environment)
+            // {
+            //     default:
+            //     case "test":
+            //         services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
+            //     break;
+            //     case "mypc":
+            //         services.AddSingleton(typeof(IMovieService),typeof(Mypc_MovieService));
+            //     break;
+            //     case "aliyun":
+            //         services.AddSingleton(typeof(IMovieService),typeof(Aliyun_MovieService));
+            //     break;
+            // }
 
         }
 

@@ -29,6 +29,11 @@ namespace LittleSexy.Model.DBModel
         /// <value></value>
         public string Cover {get;set;}
         /// <summary>
+        /// 详情
+        /// </summary>
+        /// <value></value>
+        public string Details {get;set;}
+        /// <summary>
         /// 电影文件创建时间
         /// </summary>
         /// <value></value>

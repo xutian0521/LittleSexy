@@ -6,6 +6,7 @@ namespace LittleSexy.Model.ViewModel
 {
     public class v_Movie
     {
+        public long Id { get; set; }
         /// <summary>
         /// 标题
         /// </summary>

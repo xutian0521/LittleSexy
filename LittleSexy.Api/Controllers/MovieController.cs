@@ -14,8 +14,8 @@ namespace LittleSexy.Api.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        protected IMovieService _service;
-        public MovieController(IMovieService movieService)
+        protected MovieService _service;
+        public MovieController(MovieService movieService)
         {
             _service = movieService;
         }
@@ -23,6 +23,13 @@ namespace LittleSexy.Api.Controllers
         public async Task<ApiResult> List(int pageIndex = 1, int pageSize =20)
         {
             var result = await _service.GetMoviesListAsync(pageIndex, pageSize);
+            Response.StatusCode= 200;
+            return result;
+        }
+        [HttpGet("Detail")]
+        public async Task<ApiResult> Detail(long id)
+        {
+            var result = await _service.GetMoviesDetailAsync(id);
             Response.StatusCode= 200;
             return result;
         }
