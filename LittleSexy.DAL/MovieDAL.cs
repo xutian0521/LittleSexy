@@ -24,6 +24,13 @@ namespace LittleSexy.DAL
             var list = await DB.Conn().QueryAsync<t_Movie>("SELECT Title,FanHao,Source,Cover,CreationTime FROM t_Movie LIMIT @skip,@take;",new {skip,take});
             return list;
         }
+        public async Task<IEnumerable<t_Movie>> GetMongoMovieListAsync(int pageIndex, int pageSize)
+        {
+            int skip = pageSize *(pageIndex -1);
+            int take= pageSize;
+            var list = await DB.Conn().QueryAsync<t_Movie>("SELECT Title,FanHao,Source,Cover,CreationTime FROM t_Movie LIMIT @skip,@take;",new {skip,take});
+            return list;
+        }
     }
 
 }
