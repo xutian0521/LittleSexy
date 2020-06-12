@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Service
 {
     [Inject]
-    public class Test_MovieService: IMovieService
+    public class Test_MovieService
     {
         //todo:业务层改用多个实例
         public IConfiguration Configuration { get; }

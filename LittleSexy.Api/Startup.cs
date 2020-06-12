@@ -13,7 +13,6 @@ using System.Reflection;
 using LittleSexy.Common;
 using Microsoft.AspNetCore.HttpOverrides;
 using LittleSexy.Service;
-using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Api
 {

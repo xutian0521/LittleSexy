@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Service
 {
@@ -23,7 +22,7 @@ namespace LittleSexy.Service
         public MovieService(IServiceProvider service,IConfiguration configuration)
         {
             _pageDAL = service.GetService<PageDAL>();
-            _movieDAL=service.GetService<MovieDAL>();
+            _movieDAL=service.GetService<MovieDAL_Text>();
             Configuration = configuration;
         }
 

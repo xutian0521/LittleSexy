@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using LittleSexy.Common;
 using Microsoft.Extensions.DependencyInjection;
 using LittleSexy.Service;
-using LittleSexy.Service.Interface;
 
 namespace LittleSexy.Api.Controllers
 {
