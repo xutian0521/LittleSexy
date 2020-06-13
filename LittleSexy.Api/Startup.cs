@@ -29,8 +29,15 @@ namespace LittleSexy.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddCors();
-        
+            services.AddCors(options => options.AddPolicy("HouseManager.Cors", policy =>
+            {
+                var hosts = Configuration.GetValue<string>("AppHosts");
+                policy.WithOrigins(hosts.Split(','))
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+            }));
+
             List<Assembly> listAsb = new List<Assembly>();
             listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.Service")));
             listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.DAL")));

@@ -21,14 +21,14 @@ namespace LittleSexy.Api.Controllers
         [HttpGet("List")]
         public async Task<ApiResult> List(int pageIndex = 1, int pageSize =20)
         {
-            var result = await _service.GetMoviesListAsync(pageIndex, pageSize);
+            var result = await _service.GetList(pageIndex, pageSize);
             Response.StatusCode= 200;
             return result;
         }
         [HttpGet("Detail")]
         public async Task<ApiResult> Detail(long id)
         {
-            var result = await _service.GetMoviesDetailAsync(id);
+            var result = await _service.DetailAsync(id);
             Response.StatusCode= 200;
             return result;
         }

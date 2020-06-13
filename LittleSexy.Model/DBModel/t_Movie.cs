@@ -38,5 +38,6 @@ namespace LittleSexy.Model.DBModel
         /// </summary>
         /// <value></value>
         public DateTime CreationTime { get; set; }
+
     }
 }
