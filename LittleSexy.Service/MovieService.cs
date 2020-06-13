@@ -189,7 +189,7 @@ namespace LittleSexy.Service
             }
             ApiResult result = new ApiResult();
 
-            string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
+            string movieRootPath = Directory.GetCurrentDirectory() + @"/wwwroot/ftp/";
             List<List<FileInfo>> fileList = new List<List<FileInfo>>();
             if (Directory.Exists(movieRootPath))
             {

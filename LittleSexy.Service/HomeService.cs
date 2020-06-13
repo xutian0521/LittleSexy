@@ -27,7 +27,7 @@ namespace LittleSexy.Service
             string currentPath = Directory.GetCurrentDirectory();
             DirectoryInfo dir = new DirectoryInfo(currentPath + "/wwwroot/images/homeBanner/");
             var files = dir.GetFiles();
-            string host = "/images/homeBanner/";
+            string host = _configuration.GetValue<string>("AppHosts") + "/images/homeBanner/";
             foreach (var item in files)
             {
                 vmls.Add(new v_PageImages { ImagePath = host + item.Name });
