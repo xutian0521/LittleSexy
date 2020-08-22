@@ -209,7 +209,7 @@ namespace LittleSexy.Service
                     if (ext == ".mp4" || ext == ".webm")
                     {
                         movie.Title = item.Name;
-                        movie.FanHao = Path.GetFileNameWithoutExtension(item.Name);
+                        movie.FanHao = Path.GetFileNameWithoutExtension(item.Name.Replace("-C", ""));
                         movie.Source = item.FullName.Replace(movieRootPath, "");
 
                         movie.CreationTime = item.CreationTime;
@@ -234,11 +234,15 @@ namespace LittleSexy.Service
                         }
                     }
                 }
+                if(!movie.Cover.Contains(".jpg"))
+                {
+                    movie.Cover ="../images/default.jpg";
+                }
                 movieLists.Add(movie);
             }
             string AppHost = _configuration.GetValue<string>("AppHosts");
             List<v_Movie> lsMovie = new List<v_Movie>();
-            foreach (var item in movieLists)
+            foreach (var item in movieLists.OrderByDescending(x =>x.CreationTime))
             {
                 v_Movie model = new v_Movie();
                 model.Id = lsMovie.Count +1;
