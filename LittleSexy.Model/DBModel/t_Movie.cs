@@ -27,7 +27,7 @@ namespace LittleSexy.Model.DBModel
         /// 封面
         /// </summary>
         /// <value></value>
-        public string Cover {get;set;}
+        public string Cover {get;set;} = string.Empty;
         /// <summary>
         /// 详情
         /// </summary>
