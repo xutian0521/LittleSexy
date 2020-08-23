@@ -7,21 +7,14 @@ namespace LittleSexy.Common
     /// <summary>
     /// SQLite操作类
     /// </summary>
-    public class SQLiteHelper
+    public static class SQLiteHelper
     {
         /// <summary>
         /// 连接字符串
         /// </summary>
-        public string connectionString = string.Empty;
+        public static string connectionString = string.Empty;
 
-        /// <summary>
-        /// 构造，初始化字符串
-        /// </summary>
-        /// <param name="conn"></param>
-        public SQLiteHelper(string conn)
-        {
-            connectionString = conn;
-        }
+
 
         /// <summary>
         /// 执行查询语句，返回DataSet
@@ -29,7 +22,7 @@ namespace LittleSexy.Common
         /// <param name="sql">查询SQL</param>
         /// <param name="listPreSql">前置执行SQL</param>
         /// <returns></returns>
-        public DataSet Query(string sql, List<string> listPreSql = null)
+        public static DataSet Query(string sql, List<string> listPreSql = null)
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -64,7 +57,7 @@ namespace LittleSexy.Common
         /// <param name="sql">SQL语句</param>
         /// <param name="parameters">参数</param>
         /// <returns>影响的记录数</returns>
-        public int ExecuteNonQuery(string sql, SQLiteParameter[] parameters = null)
+        public static int ExecuteNonQuery(string sql, SQLiteParameter[] parameters = null)
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -89,7 +82,7 @@ namespace LittleSexy.Common
         /// </summary>
         /// <param name="listSql"></param>
         /// <returns></returns>
-        public bool ExecuteNonQuery(List<string> listSql)
+        public static bool ExecuteNonQuery(List<string> listSql)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -127,7 +120,7 @@ namespace LittleSexy.Common
         /// <param name="sql">查询语句</param>
         /// <param name="listPreSql">前置执行SQL</param>
         /// <returns>DataTable</returns>
-        public object ExecuteScalar(string sql, List<string> listPreSql = null)
+        public static object ExecuteScalar(string sql, List<string> listPreSql = null)
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {

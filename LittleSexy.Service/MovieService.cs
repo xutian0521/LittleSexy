@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
+using System.Data;
 
 namespace LittleSexy.Service
 {
@@ -68,11 +69,23 @@ namespace LittleSexy.Service
         private async Task<ApiResult> GetListInternal()
         {
             ApiResult result = new ApiResult();
+            //播放量字典
+            Dictionary<string, int> viewCountsDict = new Dictionary<string, int>();
+            var dt = SQLiteHelper.Query("SELECT * FROM Dict;");
+            if (dt.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow item in dt.Tables[0].Rows)
+                {
+                    string fanHao =  item["Datakey"].ToString();
+                    int count = int.Parse(item["DataValue"].ToString());
+                    viewCountsDict.Add(fanHao, count);
+                }
+            }
             string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
             List<List<FileInfo>> fileList = new List<List<FileInfo>>();
             if (Directory.Exists(movieRootPath))
             {
-                this.GetAllDir(movieRootPath, ref fileList);
+                this.GetAllDir(movieRootPath, ref fileList); //递归查询文件目录
             }
             else
             {
@@ -85,7 +98,7 @@ namespace LittleSexy.Service
                 foreach (var item in itemOnes)
                 {
                     var ext = Path.GetExtension(item.FullName);
-                    if (ext == ".mp4" || ext == ".webm")
+                    if (ext == ".mp4" || ext == ".webm") //视频
                     {
                         movie.Title = item.Name;
                         movie.FanHao = Path.GetFileNameWithoutExtension(item.Name.Replace("-C", ""));
@@ -98,7 +111,7 @@ namespace LittleSexy.Service
                 foreach (var item in itemOnes)
                 {
                     var ext = Path.GetExtension(item.FullName);
-                    if (ext == ".jpg" || ext == ".png")
+                    if (ext == ".jpg" || ext == ".png") //图片
                     {
                         string picRelativePath = item.FullName.Replace(movieRootPath, "");
 
@@ -113,7 +126,7 @@ namespace LittleSexy.Service
                         }
                     }
                 }
-                if (!movie.Cover.Contains(".jpg"))
+                if (!movie.Cover.Contains(".jpg")) //视频不包含图片添加默认图片
                 {
                     movie.Cover = "../images/default.jpg";
                 }
@@ -131,6 +144,7 @@ namespace LittleSexy.Service
                 model.LinkUrl = "{path:'movie/detail', query: { id: " + model.Id + " }}";
                 model.Source = AppHost + @"/ftp/" + item.Source;
                 model.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                model.ViewCount = viewCountsDict.Any(x => x.Key == item.FanHao) ? viewCountsDict[item.FanHao] : 0;
                 lsMovie.Add(model);
             }
             result.Content = lsMovie;
@@ -153,7 +167,7 @@ namespace LittleSexy.Service
         }
 
 
-        public async Task<ApiResult> DetailAsync(long id)
+        public async Task<ApiResult> DetailAsync(int id)
         {
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
 
@@ -162,7 +176,22 @@ namespace LittleSexy.Service
 
             if (_cache != null && _cache.Count > 0)
             {
-                result.Content = _cache.Where(x => x.Id == id).FirstOrDefault(); ;
+                var detail = _cache.Where(x => x.Id == id).FirstOrDefault();
+                int count = 0;
+                var dt = SQLiteHelper.Query($"SELECT * FROM Dict  WHERE DataKey='{detail.FanHao}'");
+                if (dt.Tables[0].Rows.Count > 0)
+                {
+                    var dr = dt.Tables[0].Rows[0];
+                    count =int.Parse( dr["DataValue"].ToString());
+                    int _id = int.Parse(dr["Id"].ToString());
+                    int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET DataValue = '{ ++count}' WHERE Id = '{_id}'; ");
+                }
+                else
+                {
+                    int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{detail.FanHao}','1');");
+                }
+                
+                result.Content = detail;
             }
             return result;
         }

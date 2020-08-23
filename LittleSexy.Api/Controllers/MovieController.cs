@@ -26,7 +26,7 @@ namespace LittleSexy.Api.Controllers
             return result;
         }
         [HttpGet("Detail")]
-        public async Task<ApiResult> Detail(long id)
+        public async Task<ApiResult> Detail(int id)
         {
             var result = await _service.DetailAsync(id);
             Response.StatusCode= 200;

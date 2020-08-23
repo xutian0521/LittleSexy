@@ -26,6 +26,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SQLite\重命名为data.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties Properties_4launchSettings_1json__JSONSchema="http://json-schema.org/draft-04/schema" /></VisualStudio></ProjectExtensions>
 
 

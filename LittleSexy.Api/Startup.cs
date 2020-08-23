@@ -13,6 +13,7 @@ using System.Reflection;
 using LittleSexy.Common;
 using Microsoft.AspNetCore.HttpOverrides;
 using LittleSexy.Service;
+using System.IO;
 
 namespace LittleSexy.Api
 {
@@ -51,6 +52,7 @@ namespace LittleSexy.Api
             }
             //test,Desktop computer,aliyun
             string environment= Configuration.GetSection("environment").Value;
+            SQLiteHelper.connectionString = string.Format(Configuration.GetConnectionString("SQLite"), Directory.GetCurrentDirectory());
             // switch (environment)
             // {
             //     default:

@@ -37,6 +37,10 @@ namespace LittleSexy.Model.ViewModel
         /// </summary>
         /// <value></value>
         public string Cover {get;set;}
+        /// <summary>
+        /// 播放量
+        /// </summary>
+        public int ViewCount { get; set; }
 
     }
 }
