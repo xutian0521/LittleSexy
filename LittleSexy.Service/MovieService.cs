@@ -70,17 +70,7 @@ namespace LittleSexy.Service
         {
             ApiResult result = new ApiResult();
             //播放量字典
-            Dictionary<string, int> viewCountsDict = new Dictionary<string, int>();
-            var dt = SQLiteHelper.Query("SELECT * FROM Dict;");
-            if (dt.Tables[0].Rows.Count > 0)
-            {
-                foreach (DataRow item in dt.Tables[0].Rows)
-                {
-                    string fanHao =  item["Datakey"].ToString();
-                    int count = int.Parse(item["DataValue"].ToString());
-                    viewCountsDict.Add(fanHao, count);
-                }
-            }
+            Dictionary<string, int> viewCountsDict = this.GetViewCountDict();
             string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
             List<List<FileInfo>> fileList = new List<List<FileInfo>>();
             if (Directory.Exists(movieRootPath))
@@ -132,7 +122,7 @@ namespace LittleSexy.Service
                 }
                 movieLists.Add(movie);
             }
-            string AppHost = _configuration.GetValue<string>("AppHosts");
+            string ApiHost = _configuration.GetValue<string>("ApiHost");
             List<v_Movie> lsMovie = new List<v_Movie>();
             foreach (var item in movieLists.OrderByDescending(x => x.CreationTime))
             {
@@ -140,9 +130,9 @@ namespace LittleSexy.Service
                 model.Id = lsMovie.Count + 1;
                 model.Title = item.Title;
                 model.FanHao = item.FanHao;
-                model.Cover = AppHost + @"/ftp/" + item.Cover?.Replace("\\", "/");
+                model.Cover = ApiHost + @"/ftp/" + item.Cover?.Replace("\\", "/");
                 model.LinkUrl = "{path:'movie/detail', query: { id: " + model.Id + " }}";
-                model.Source = AppHost + @"/ftp/" + item.Source;
+                model.Source = ApiHost + @"/ftp/" + item.Source;
                 model.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
                 model.ViewCount = viewCountsDict.Any(x => x.Key == item.FanHao) ? viewCountsDict[item.FanHao] : 0;
                 lsMovie.Add(model);
@@ -151,6 +141,21 @@ namespace LittleSexy.Service
             _memoryCache.Set("movieTempList", lsMovie, new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(30)));
             return result;
+        }
+        private Dictionary<string, int> GetViewCountDict()
+        {
+            Dictionary<string, int> viewCountsDict = new Dictionary<string, int>();
+            var dt = SQLiteHelper.Query("SELECT * FROM Dict;");
+            if (dt.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow item in dt.Tables[0].Rows)
+                {
+                    string fanHao = item["Datakey"].ToString();
+                    int count = int.Parse(item["DataValue"].ToString());
+                    viewCountsDict.Add(fanHao, count);
+                }
+            }
+            return viewCountsDict;
         }
         public async Task<ApiResult> GetList(int pageIndex, int pageSize)
         {
@@ -170,7 +175,7 @@ namespace LittleSexy.Service
         public async Task<ApiResult> DetailAsync(int id)
         {
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
-
+            Dictionary<string, int> viewCountsDict = this.GetViewCountDict();
             ApiResult result = new ApiResult();
             List<v_Movie> movieLists = new List<v_Movie>();
 
@@ -190,7 +195,7 @@ namespace LittleSexy.Service
                 {
                     int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{detail.FanHao}','1');");
                 }
-                
+                detail.ViewCount = viewCountsDict.Any(x => x.Key == detail.FanHao) ? viewCountsDict[detail.FanHao] : 0;
                 result.Content = detail;
             }
             return result;
