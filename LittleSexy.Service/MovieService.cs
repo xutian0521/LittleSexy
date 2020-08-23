@@ -28,120 +28,6 @@ namespace LittleSexy.Service
             _movieDAL=service.GetService<MovieDAL>();
             _configuration = configuration;
         }
-
-        /// <summary>
-        /// 获取电影列表
-        /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">页容量</param>
-        /// <returns></returns>
-        public async Task<ApiResult> GetMoviesDetailAsync(long id)
-        {
-            string movieRootPath = _configuration.GetSection("movieRootPath").Value;
-            string imageServerHost= _configuration.GetSection("imageServerHost").Value;
-            ApiResult result=new ApiResult();
-            List<v_Movie> movieLists=new List<v_Movie>();
-            t_Movie item= await _movieDAL.GetMovieOneAsync(id);
-                v_Movie model=new v_Movie();
-                model.Title= item.Title;
-                model.FanHao = item.FanHao;
-                model.Cover = imageServerHost + item.Cover.Replace( "\\", "/");
-                model.LinkUrl = "movieDetail?Id=" +item.Id;
-                model.Source = imageServerHost + item.Source;
-                model.Date =item.CreationTime.ToString("yyyy-MM-dd hh:mm");
-            result.Content= model;
-            return result;
-        }
-        
-        /// <summary>
-        /// 获取电影列表
-        /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">页容量</param>
-        /// <returns></returns>
-        public async Task<ApiResult> GetMoviesListAsync(int pageIndex, int pageSize)
-        {
-
-            string movieRootPath = _configuration.GetSection("movieRootPath").Value;
-            string imageServerHost= _configuration.GetSection("imageServerHost").Value;
-            ApiResult result=new ApiResult();
-            List<v_Movie> movieList=new List<v_Movie>();
-            IEnumerable<t_Movie> lsMovie= await _movieDAL.GetMovieListAsync(pageIndex, pageSize);
-            foreach (var item in lsMovie)
-            {
-                v_Movie model=new v_Movie();
-                model.Id = item.Id;
-                model.Title= item.Title;
-                model.FanHao = item.FanHao;
-                model.Cover = imageServerHost + item.Cover.Replace( "\\", "/");
-                model.LinkUrl = "/#/Movie/Detail?Id=" +item.Id;
-                model.Source = movieRootPath+ item.Source;
-                model.Date =item.CreationTime.ToString("yyyy-MM-dd hh:mm");
-                movieList.Add(model);
-            }
-            result.Content= movieList;
-
-            return result;
-        }
-
-        /// <summary>
-        /// 更新文件目录列表
-        /// </summary>
-        /// <returns></returns>
-        public async Task<ApiResult> UpdateMoviesListAsync()
-        {
-            ApiResult result=new ApiResult();
-            string movieRootPath = _configuration.GetSection("movieRootPath").Value;
-            List<List<FileInfo>> fileList = new List<List<FileInfo>>();
-            if(Directory.Exists(movieRootPath))
-            {
-                this.GetAllDir(movieRootPath, ref fileList);
-            }
-            else
-            {
-                return new ApiResult(-1, $@"没找到磁盘上{movieRootPath}的目录");
-            }
-            List<t_Movie> movieLists=new List<t_Movie>();
-            foreach (var itemOnes in fileList)
-            {
-                t_Movie movie=new t_Movie();
-                foreach (var item in itemOnes)
-                {
-                    var ext= Path.GetExtension( item.FullName);
-                    if(ext ==".mp4" || ext == ".webm")
-                    {
-                        movie.Title =Path.GetFileNameWithoutExtension(item.Name);
-                        movie.FanHao=Path.GetFileNameWithoutExtension(item.Name);
-                        movie.Source = item.FullName.Replace(movieRootPath, "");
-
-                        movie.CreationTime = item.CreationTime;
-                    }
-                }
-
-                foreach (var item in itemOnes)
-                {
-                    var ext= Path.GetExtension( item.FullName);
-                    if(ext == ".jpg" || ext == ".png")
-                    {
-                        string picRelativePath = item.FullName.Replace(movieRootPath, "");
-
-                        if (item.Name.Contains(movie.FanHao))
-                        {
-                            movie.Cover = picRelativePath;
-                            movie.Title = Path.GetFileNameWithoutExtension(item.Name);
-                        }
-                        else
-                        {
-                            movie.Details += picRelativePath + ";";
-                        }
-                    }
-                }
-                movieLists.Add(movie);
-            }
-            int row= await _movieDAL.UpdateInsertMovieListAsync(movieLists);
-            result.Content= movieLists;
-            return result;
-        }
         /// <summary>
         /// 递归获取电影文件
         /// </summary>
@@ -179,16 +65,9 @@ namespace LittleSexy.Service
                 Console.WriteLine(ones[i].FullName);
             }
         }
-
-        public async Task<ApiResult> GetList(int pageIndex, int pageSize)
+        private async Task<ApiResult> GetListInternal()
         {
-            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
-            if (_cache != null && _cache.Count > 0)
-            {
-                return new ApiResult() { Content = _cache };
-            }
             ApiResult result = new ApiResult();
-
             string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
             List<List<FileInfo>> fileList = new List<List<FileInfo>>();
             if (Directory.Exists(movieRootPath))
@@ -234,23 +113,23 @@ namespace LittleSexy.Service
                         }
                     }
                 }
-                if(!movie.Cover.Contains(".jpg"))
+                if (!movie.Cover.Contains(".jpg"))
                 {
-                    movie.Cover ="../images/default.jpg";
+                    movie.Cover = "../images/default.jpg";
                 }
                 movieLists.Add(movie);
             }
             string AppHost = _configuration.GetValue<string>("AppHosts");
             List<v_Movie> lsMovie = new List<v_Movie>();
-            foreach (var item in movieLists.OrderByDescending(x =>x.CreationTime))
+            foreach (var item in movieLists.OrderByDescending(x => x.CreationTime))
             {
                 v_Movie model = new v_Movie();
-                model.Id = lsMovie.Count +1;
+                model.Id = lsMovie.Count + 1;
                 model.Title = item.Title;
                 model.FanHao = item.FanHao;
                 model.Cover = AppHost + @"/ftp/" + item.Cover?.Replace("\\", "/");
                 model.LinkUrl = "{path:'movie/detail', query: { id: " + model.Id + " }}";
-                model.Source = AppHost+ @"/ftp/" + item.Source;
+                model.Source = AppHost + @"/ftp/" + item.Source;
                 model.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
                 lsMovie.Add(model);
             }
@@ -259,6 +138,20 @@ namespace LittleSexy.Service
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(30)));
             return result;
         }
+        public async Task<ApiResult> GetList(int pageIndex, int pageSize)
+        {
+            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
+            if (_cache != null && _cache.Count > 0)
+            {
+                Task.Run(() => { this.GetListInternal(); });
+                return new ApiResult() { Content = _cache };
+            }
+            
+            var result= await this.GetListInternal();
+            return result;
+
+        }
+
 
         public async Task<ApiResult> DetailAsync(long id)
         {

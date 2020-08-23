@@ -32,13 +32,6 @@ namespace LittleSexy.Api.Controllers
             Response.StatusCode= 200;
             return result;
         }
-        [HttpPut]
-        public async Task<ApiResult> Update()
-        {
-            var result = await _service.UpdateMoviesListAsync();
-            Response.StatusCode= 200;
-            return result;
-        }
 
     }
 }
