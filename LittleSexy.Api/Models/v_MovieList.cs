@@ -32,6 +32,7 @@ namespace LittleSexy.Api.Models
         /// </summary>
         /// <value></value>
         public string Date { get; set; }
+        public DateTime CreationTime { get; set; }
         /// <summary>
         /// 封面
         /// </summary>

@@ -128,6 +128,7 @@ namespace LittleSexy.Api.Services
                 model.LinkUrl = "{path:'movie/detail', query: { id: " + model.Id + " }}";
                 model.Source = ApiHost + @"/ftp/" + item.Source;
                 model.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
+                model.CreationTime = item.CreationTime;
                 model.ViewCount = viewCountsDict.Any(x => x.Key == item.FanHao) ? viewCountsDict[item.FanHao] : 0;
                 lsMovie.Add(model);
             }
@@ -151,16 +152,30 @@ namespace LittleSexy.Api.Services
             }
             return viewCountsDict;
         }
-        public async Task<ApiResult> GetList(int pageIndex, int pageSize)
+        public async Task<ApiResult> GetList(int pageIndex, int pageSize, string sort)
         {
+            List<v_Movie> list = new List<v_Movie>();
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
             if (_cache != null && _cache.Count > 0)
             {
                 Task.Run(() => { this.GetListInternal(); });
+                list = _cache;
                 return new ApiResult() { Content = _cache };
             }
+
             
             var result= await this.GetListInternal();
+            list = result.Content;
+
+            //排序
+            if (sort == SortType.CreateTime.ToString())
+            {
+                list = list.OrderByDescending(x => x.CreationTime).ToList();
+            }
+            else if(sort == SortType.ViewCount.ToString())
+            {
+                list = list.OrderByDescending(y => y.ViewCount).ToList();
+            }
             return result;
 
         }
