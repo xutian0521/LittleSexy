@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LittleSexy.Model.ViewModel
+namespace LittleSexy.Api.Models
 {
     public class v_PageImages
     {

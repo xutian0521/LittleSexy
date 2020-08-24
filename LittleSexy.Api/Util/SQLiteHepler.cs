@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 
-namespace LittleSexy.Common
+namespace LittleSexy.Api.Util
 {
     /// <summary>
     /// SQLite操作类

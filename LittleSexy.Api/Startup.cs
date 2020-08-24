@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Cors;
-using System.Reflection;
-using LittleSexy.Common;
 using Microsoft.AspNetCore.HttpOverrides;
-using LittleSexy.Service;
 using System.IO;
+using LittleSexy.Api.Util;
+using LittleSexy.Api.Services;
+using Microsoft.Extensions.Hosting;
 
 namespace LittleSexy.Api
 {
@@ -30,7 +23,7 @@ namespace LittleSexy.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddCors(options => options.AddPolicy("HouseManager.Cors", policy =>
+            services.AddCors(options => options.AddPolicy("LittleSexy.Cors", policy =>
             {
                 var hosts = Configuration.GetValue<string>("AppHosts");
                 policy.WithOrigins(hosts.Split(','))
@@ -38,58 +31,37 @@ namespace LittleSexy.Api
                         .AllowAnyMethod()
                         .AllowCredentials();
             }));
+            services.AddSingleton<HomeService>();
+            services.AddSingleton<MovieService>();
 
-            List<Assembly> listAsb = new List<Assembly>();
-            listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.Service")));
-            listAsb.Add(Assembly.Load(new AssemblyName("LittleSexy.DAL")));
-            foreach (Assembly asb in listAsb)
-            {
-                foreach (var item in asb.GetTypes().Where(t => !t.IsAbstract && 
-                    t.IsDefined(typeof(InjectAttribute))))
-                {
-                    services.AddSingleton(item);
-                }
-            }
-            //test,Desktop computer,aliyun
             string environment= Configuration.GetSection("environment").Value;
             SQLiteHelper.connectionString = string.Format(Configuration.GetConnectionString("SQLite"), Directory.GetCurrentDirectory());
-            // switch (environment)
-            // {
-            //     default:
-            //     case "test":
-            //         services.AddSingleton(typeof(IMovieService),typeof(Test_MovieService));
-            //     break;
-            //     case "mypc":
-            //         services.AddSingleton(typeof(IMovieService),typeof(Mypc_MovieService));
-            //     break;
-            //     case "aliyun":
-            //         services.AddSingleton(typeof(IMovieService),typeof(Aliyun_MovieService));
-            //     break;
-            // }
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
-
-
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-            app.UseMiddleware<BasicMiddleWare>();
             app.UseStaticFiles();
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            }); 
+                endpoints.MapControllers();
+            });
         }
     }
 }

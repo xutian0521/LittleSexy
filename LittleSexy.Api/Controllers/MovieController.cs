@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LittleSexy.Api.Services;
+using LittleSexy.Api.Util;
 using Microsoft.AspNetCore.Mvc;
-using LittleSexy.Common;
 using Microsoft.Extensions.DependencyInjection;
-using LittleSexy.Service;
 
 namespace LittleSexy.Api.Controllers
 {

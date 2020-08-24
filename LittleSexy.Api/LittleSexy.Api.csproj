@@ -1,23 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Index.html" />
-    <None Include="wwwroot\UserInfo.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\LittleSexy.Common\LittleSexy.Common.csproj" />
-    <ProjectReference Include="..\LittleSexy.Model\LittleSexy.Model.csproj" />
-    <ProjectReference Include="..\LittleSexy.Service\LittleSexy.Service.csproj" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.113.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="SQLite\重命名为data.db">
+    <None Update="SQLite\data.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

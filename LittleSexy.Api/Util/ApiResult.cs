@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LittleSexy.Common
+namespace LittleSexy.Api.Util
 {
     public class ApiResult
     {

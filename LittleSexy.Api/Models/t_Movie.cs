@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LittleSexy.Model.DBModel
+namespace LittleSexy.Api.Models
 {
-    public class t_Movie : DBEntityBase
+    public class t_Movie
     {
+        public long Id { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime CreateDateTime { get; set; }
+        public string Remark { get; set; }
         /// <summary>
         /// 标题
         /// </summary>

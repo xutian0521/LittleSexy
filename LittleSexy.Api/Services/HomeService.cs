@@ -1,19 +1,15 @@
-﻿using LittleSexy.Common;
-using LittleSexy.Model.DBModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using LittleSexy.DAL;
 using System.Threading.Tasks;
-using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.IO;
+using LittleSexy.Api.Models;
 
-namespace LittleSexy.Service
+namespace LittleSexy.Api.Services
 {
-    [Inject]
     public class HomeService
     {
         public IConfiguration _configuration { get; }

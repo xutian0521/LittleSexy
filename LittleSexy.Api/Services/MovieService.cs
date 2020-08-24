@@ -1,32 +1,26 @@
-using LittleSexy.Common;
-using LittleSexy.Model.DBModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using LittleSexy.DAL;
 using System.Threading.Tasks;
-using LittleSexy.Model.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 using System.Data;
+using LittleSexy.Api.Util;
+using LittleSexy.Api.Models;
 
-namespace LittleSexy.Service
+namespace LittleSexy.Api.Services
 {
-    [Inject]
+
     public class MovieService
     {
         public static IMemoryCache _memoryCache = new MemoryCache(new MemoryCacheOptions());
         //todo:业务层改用多个实例
         public IConfiguration _configuration { get; }
-        protected PageDAL _pageDAL;
-        protected MovieDAL _movieDAL;
         public MovieService(IServiceProvider service,IConfiguration configuration)
         {
-            _pageDAL = service.GetService<PageDAL>();
-            _movieDAL=service.GetService<MovieDAL>();
             _configuration = configuration;
         }
         /// <summary>
