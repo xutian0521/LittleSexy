@@ -12,17 +12,21 @@ namespace LittleSexy.Api.Util
         /// </summary>
         CreateTime = 0,
         /// <summary>
+        /// 最后访问时间
+        /// </summary>
+        LastAccessTime = 1,
+        /// <summary>
         /// 观看次数
         /// </summary>
-        ViewCount = 1,
+        ViewCount = 2,
         /// <summary>
         /// 热门
         /// </summary>
-        Hot = 2,
+        Hot = 3,
         /// <summary>
         /// 精选
         /// </summary>
-        Featured = 3, 
+        Featured = 4, 
 
     }
 }

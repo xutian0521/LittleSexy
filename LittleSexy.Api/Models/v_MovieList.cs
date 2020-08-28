@@ -6,7 +6,7 @@ namespace LittleSexy.Api.Models
 {
     public class v_Movie
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// 标题
         /// </summary>
@@ -18,10 +18,14 @@ namespace LittleSexy.Api.Models
         /// <value></value>
         public string LinkUrl { get; set; }
         /// <summary>
+        /// 电影预览图
+        /// </summary>
+        public List<string> Preview { get; set; } = new List<string>();
+        /// <summary>
         /// 源
         /// </summary>
         /// <value></value>
-        public string Source { get; set; }
+        public List<string> Sources { get; set; } = new List<string>();
         /// <summary>
         /// 番号
         /// </summary>
@@ -32,7 +36,14 @@ namespace LittleSexy.Api.Models
         /// </summary>
         /// <value></value>
         public string Date { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         public DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 上次访问时间
+        /// </summary>
+        public DateTime LastAccessTime { get; set; }
         /// <summary>
         /// 封面
         /// </summary>
@@ -42,6 +53,10 @@ namespace LittleSexy.Api.Models
         /// 播放量
         /// </summary>
         public int ViewCount { get; set; }
+        /// <summary>
+        /// 女优
+        /// </summary>
+        public v_Actress Actress { get; set; } = new v_Actress();
 
     }
 }

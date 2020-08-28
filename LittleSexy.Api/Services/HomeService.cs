@@ -17,7 +17,7 @@ namespace LittleSexy.Api.Services
         {
             _configuration = configuration;
         }
-        public async Task<IEnumerable<v_PageImages>> GetBnners()
+        public async Task<List<v_PageImages>> GetBnners()
         {
             List<v_PageImages> vmls = new List<v_PageImages>();
             string currentPath = Directory.GetCurrentDirectory();
@@ -28,7 +28,6 @@ namespace LittleSexy.Api.Services
             {
                 vmls.Add(new v_PageImages { ImagePath = host + item.Name });
             }
-
             return vmls;
         }
     }

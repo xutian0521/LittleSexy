@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LittleSexy.Api.Models;
 using LittleSexy.Api.Services;
 using LittleSexy.Api.Util;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +20,22 @@ namespace LittleSexy.Api.Controllers
             _service = movieService;
         }
         [HttpGet("List")]
-        public async Task<ApiResult> List(int pageIndex = 1, int pageSize =20, string sort = "CreateTime")
+        public async Task<List<v_Movie>> List(int pageIndex = 1, int pageSize =20, string sort = "CreateTime")
         {
             var result = await _service.GetList(pageIndex, pageSize, sort);
-            Response.StatusCode= 200;
             return result;
         }
         [HttpGet("Detail")]
-        public async Task<ApiResult> Detail(int id)
+        public async Task<v_Movie> Detail(int id)
         {
             var result = await _service.DetailAsync(id);
-            Response.StatusCode= 200;
+            return result;
+        }
+
+        [HttpGet("Actresses")]
+        public async Task<List<v_Actress>> Actresses()
+        {
+            var result = await _service.Actresses();
             return result;
         }
 
