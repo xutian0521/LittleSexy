@@ -54,6 +54,15 @@ namespace LittleSexy.Api.Models
         /// 兴趣爱好
         /// </summary>
         public string Interest { get; set; }
+        /// <summary>
+        /// 浏览次数
+        /// </summary>
+        public int ViewCount { get; set; }
+        public DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 是否喜欢
+        /// </summary>
+        public int IsLiked { get; set; }
 
     }
 }

@@ -19,24 +19,90 @@ namespace LittleSexy.Api.Controllers
         {
             _service = movieService;
         }
-        [HttpGet("List")]
-        public async Task<List<v_Movie>> List(int pageIndex = 1, int pageSize =20, string sort = "CreateTime")
+        [HttpPut]
+        public async Task<IActionResult> UpdateAllMovies()
         {
-            var result = await _service.GetList(pageIndex, pageSize, sort);
+            var result = await _service.UpdateAllMovies();
+            if (result)
+            {
+                return Accepted();
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+        [HttpGet("MovieList")]
+        public async Task<List<v_Movie>> MovieList(string sort = "CreateTime", int pageIndex = 1, int pageSize =20 )
+        {
+            var result = await _service.GetList( sort, null, null, pageIndex, pageSize);
             return result;
         }
-        [HttpGet("Detail")]
-        public async Task<v_Movie> Detail(int id)
+        [HttpGet("LikedMovies")]
+        public async Task<List<v_Movie>> LikedMovies(string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
+        {
+            var result = await _service.GetList(sort, null, 1, pageIndex, pageSize);
+            return result;
+        }
+        [HttpGet("MovieDetail")]
+        public async Task<v_Movie> MovieDetail(int id)
         {
             var result = await _service.DetailAsync(id);
             return result;
         }
 
         [HttpGet("Actresses")]
-        public async Task<List<v_Actress>> Actresses()
+        public async Task<List<v_Actress>> Actresses(string sort = "CreateTime", int? isLiked = null)
         {
-            var result = await _service.Actresses();
+            var result = await _service.Actresses(sort, isLiked);
             return result;
+        }
+        [HttpGet("LikedActresses")]
+        public async Task<List<v_Actress>> LikedActresses(string sort = "CreateTime")
+        {
+            var result = await _service.Actresses(sort, 1);
+            return result;
+        }
+
+        [HttpGet("ActressDetail")]
+        public async Task<v_Actress> ActressDetail(string actressName)
+        {
+            var result = await _service.ActressDetails(actressName);
+            return result;
+        }
+        
+        [HttpGet("ActressMovies")]
+        public async Task<List<v_Movie>> ActressMovies(string actressName, string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
+        {
+            var result = await _service.GetList(sort, actressName, null, pageIndex, pageSize);
+            return result;
+        }
+        [HttpPatch("LikingMovie")]
+        public async Task<IActionResult> LikingMovie(int id, int isLiked)
+        {
+            var result = await _service.LikingMovie(id, isLiked);
+            if (result)
+            {
+                return Accepted();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpPatch("LikingActress")]
+        public async Task<IActionResult> LikingActress(string actressName, int isLiked)
+        {
+            var result = await _service.LikingActress(actressName, isLiked);
+            if (result)
+            {
+                return Accepted();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
     }

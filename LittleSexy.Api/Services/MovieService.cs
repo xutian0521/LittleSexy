@@ -68,17 +68,17 @@ namespace LittleSexy.Api.Services
             var dirs = dir.GetDirectories();
             return dirs.ToList();
         }
-        private async Task<List<v_Movie>> GetListInternal()
+        private async Task<List<v_Movie>> GetListInternal(string actressName, int? isLiked)
         {
 
             //播放量字典
-            Dictionary<string, int> viewCountsDict = this.GetViewCountDict();
+            Dictionary<string, (int count, int isLiked)> viewCountsDict = this.GetViewCountDict();
             string ApiHost = _configuration.GetValue<string>("ApiHost");
             string apiHostExt = ApiHost + @"/ftp/";
 
             List<v_Movie> LsMovies = new List<v_Movie>();
 
-            var actressDirs = this.GetActressDirs(movieRootPath);
+            var actressDirs = string.IsNullOrEmpty(actressName) ? this.GetActressDirs(movieRootPath): this.GetActressDirs(movieRootPath).Where(y =>y.Name.Contains(actressName));
             foreach (var actressItem in actressDirs) //每女优
             {
                 v_Actress actress = new v_Actress();
@@ -115,7 +115,8 @@ namespace LittleSexy.Api.Services
 
                                 movie.Date = item.CreationTime.ToString("yyyy-MM-dd hh:mm");
                                 movie.CreationTime = item.CreationTime;
-                                movie.ViewCount = viewCountsDict.Any(x => x.Key == FanHao) ? viewCountsDict[FanHao] : 0;
+                                movie.ViewCount = viewCountsDict.Any(x => x.Key == FanHao) ? viewCountsDict[FanHao].count : 0;
+                                movie.IsLiked = viewCountsDict.Any(x => x.Key == FanHao) ? viewCountsDict[FanHao].isLiked : 0;
                                 movie.Actress = actress;
 
                                 LsMovies.Add(movie);
@@ -146,15 +147,16 @@ namespace LittleSexy.Api.Services
                     item.Cover = "../images/default.jpg";
                 }
             }
-
+            //是否喜欢条件
+            LsMovies = isLiked == null? LsMovies : LsMovies.Where(x => x.IsLiked == isLiked.GetValueOrDefault()).ToList();
             _memoryCache.Set("movieTempList", LsMovies, new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(30)));
             return LsMovies;
         }
 
-        private Dictionary<string, int> GetViewCountDict()
+        private Dictionary<string, (int count, int isLiked)> GetViewCountDict()
         {
-            Dictionary<string, int> viewCountsDict = new Dictionary<string, int>();
+            Dictionary<string, (int count, int isLiked)> viewCountsDict = new Dictionary<string, (int count, int isLiked)>();
             var dt = SQLiteHelper.Query("SELECT * FROM Dict;");
             if (dt.Tables[0].Rows.Count > 0)
             {
@@ -162,22 +164,30 @@ namespace LittleSexy.Api.Services
                 {
                     string fanHao = item["Datakey"].ToString();
                     int count = int.Parse(item["DataValue"].ToString());
-                    viewCountsDict.Add(fanHao, count);
+                    int isLiked = int.Parse(item["IsLiked"].ToString());
+                    
+                    viewCountsDict.Add(fanHao, (count, isLiked));
                 }
             }
             return viewCountsDict;
         }
-        public async Task<List<v_Movie>> GetList(int pageIndex, int pageSize, string sort)
+        public async Task<bool> UpdateAllMovies()
+        {
+            var list = await this.GetListInternal(null, null);
+            return list.Count > 0;
+
+        }
+        public async Task<List<v_Movie>> GetList(string sort, string actressName, int? isLiked, int pageIndex, int pageSize)
         {
             //List<v_Movie> list = new List<v_Movie>();
-            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
+            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList" + actressName + isLiked);
             if (_cache != null && _cache.Count > 0)
             {
-                Task.Run(() => { this.GetListInternal(); });
+                Task.Run(() => { this.GetListInternal(actressName, isLiked); });
                 return _cache;
             }
 
-            List<v_Movie> list = await this.GetListInternal();
+            List<v_Movie> list = await this.GetListInternal(actressName, isLiked);
 
             //排序
             if (sort == SortType.CreateTime.ToString())
@@ -196,7 +206,7 @@ namespace LittleSexy.Api.Services
         {
             v_Movie movie = new v_Movie();
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
-            Dictionary<string, int> viewCountsDict = this.GetViewCountDict();
+            Dictionary<string, (int count, int isLiked)> viewCountsDict = this.GetViewCountDict();
             List<v_Movie> movieLists = new List<v_Movie>();
 
             if (_cache != null && _cache.Count > 0)
@@ -215,25 +225,35 @@ namespace LittleSexy.Api.Services
                 {
                     int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{detail.FanHao}','1');");
                 }
-                detail.ViewCount = viewCountsDict.Any(x => x.Key == detail.FanHao) ? viewCountsDict[detail.FanHao] : 0;
+                detail.ViewCount = viewCountsDict.Any(x => x.Key == detail.FanHao) ? viewCountsDict[detail.FanHao].count : 0;
+                detail.IsLiked = viewCountsDict.Any(x => x.Key == detail.FanHao) ? viewCountsDict[detail.FanHao].isLiked : 0;
                 movie = detail;
             }
             return movie;
         }
-        public async Task<List<v_Actress>> Actresses()
+        public async Task<List<v_Actress>> Actresses(string sort, int? isLiked)
         {
-            List<v_Actress> list = new List<v_Actress>();
             var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
             if (_cache != null && _cache.Count > 0)
             {
-                Task.Run(() => { this.GetActressesInternal(); });
-                list = _cache;
+                Task.Run(() => { this.GetActressesInternal( isLiked); });
                 return _cache;
             }
-            return await this.GetActressesInternal(); ;
+            var list = await this.GetActressesInternal( isLiked); ;
+            //排序
+            if (sort == SortType.CreateTime.ToString())
+            {
+                list = list.OrderByDescending(x => x.CreationTime).ToList();
+            }
+            else if (sort == SortType.ViewCount.ToString())
+            {
+                list = list.OrderByDescending(y => y.ViewCount).ToList();
+            }
+            return list;
+            
 
         }
-        public async Task<List<v_Actress>> GetActressesInternal()
+        private async Task<List<v_Actress>> GetActressesInternal( int? isLiked)
         {
             string ApiHost = _configuration.GetValue<string>("ApiHost");
             string apiHostExt = ApiHost + @"/ftp/";
@@ -257,7 +277,78 @@ namespace LittleSexy.Api.Services
                 }
                 lsActress.Add(actress);
             }
+            lsActress = lsActress.Where(y => y.IsLiked == isLiked.GetValueOrDefault()).ToList();
+            _memoryCache.Set("ActressTempList", lsActress, new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(30)));
             return lsActress;
+        }
+        public async Task<v_Actress> ActressDetails(string actressName)
+        {
+            v_Actress actress = new v_Actress();
+            var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
+            Dictionary<string, (int count, int isLiked)> viewCountsDict = this.GetViewCountDict();
+            List<v_Movie> movieLists = new List<v_Movie>();
+
+            if (_cache != null && _cache.Count > 0)
+            {
+                var detail = _cache.Where(x => x.FullName == actressName).FirstOrDefault();
+                int count = 0;
+                var dt = SQLiteHelper.Query($"SELECT * FROM Dict  WHERE DataKey='{detail.FullName}'");
+                if (dt.Tables[0].Rows.Count > 0)
+                {
+                    var dr = dt.Tables[0].Rows[0];
+                    count = int.Parse(dr["DataValue"].ToString());
+                    int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET DataValue = '{ ++count}' WHERE DataKey = '{actressName}'; ");
+                }
+                else
+                {
+                    int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{actressName}','1');");
+                }
+                detail.ViewCount = viewCountsDict.Any(x => x.Key == detail.FullName) ? viewCountsDict[detail.FullName].count : 0;
+                detail.IsLiked = viewCountsDict.Any(x => x.Key == detail.FullName) ? viewCountsDict[detail.FullName].isLiked : 0;
+                actress = detail;
+            }
+            return actress;
+        }
+        public async Task<bool> LikingMovie(int id, int isLiked)
+        {
+            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
+            var m = _cache.Where(y => y.Id == id).FirstOrDefault();
+            var dt = SQLiteHelper.Query($"SELECT * FROM Dict  WHERE DataKey='{m.FanHao}'");
+            bool isSuccess = false;
+            if (dt.Tables[0].Rows.Count > 0)
+            {
+                var dr = dt.Tables[0].Rows[0];
+                
+                int _id = int.Parse(dr["Id"].ToString());
+                int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET IsLiked ={isLiked}  WHERE DataKey = '{m.FanHao}'; ");
+                isSuccess = row > 0;
+            }
+            else
+            {
+                int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,IsLiked) VALUES ('{m.FanHao}', {isLiked} );");
+                isSuccess = row > 0;
+            }
+            return isSuccess;
+        }
+        public async Task<bool> LikingActress(string actressName, int isLiked)
+        {
+            var dt = SQLiteHelper.Query($"SELECT * FROM Dict  WHERE DataKey='{actressName}'");
+            bool isSuccess = false;
+            if (dt.Tables[0].Rows.Count > 0)
+            {
+                var dr = dt.Tables[0].Rows[0];
+
+                int _id = int.Parse(dr["Id"].ToString());
+                int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET IsLiked ={isLiked}  WHERE DataKey = '{actressName}'; ");
+                isSuccess = row > 0;
+            }
+            else
+            {
+                int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,IsLiked) VALUES ('{actressName}', {isLiked} );");
+                isSuccess = row > 0;
+            }
+            return isSuccess;
         }
 
 

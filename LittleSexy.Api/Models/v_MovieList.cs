@@ -54,6 +54,10 @@ namespace LittleSexy.Api.Models
         /// </summary>
         public int ViewCount { get; set; }
         /// <summary>
+        /// 是否喜欢
+        /// </summary>
+        public int IsLiked { get; set; }
+        /// <summary>
         /// 女优
         /// </summary>
         public v_Actress Actress { get; set; } = new v_Actress();
