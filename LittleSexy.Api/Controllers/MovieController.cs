@@ -34,17 +34,18 @@ namespace LittleSexy.Api.Controllers
 
         }
         [HttpGet("MovieList")]
-        public async Task<List<v_Movie>> MovieList(string sort = "CreateTime", int pageIndex = 1, int pageSize =20 )
+        public async Task<List<v_Movie>> MovieList
+            (string sort = "CreateTime", string actressName =null, int? isLiked = null, int pageIndex = 1, int pageSize =20 )
         {
-            var result = await _service.GetList( sort, null, null, pageIndex, pageSize);
+            var result = await _service.GetList( sort, actressName, isLiked, pageIndex, pageSize);
             return result;
         }
-        [HttpGet("LikedMovies")]
-        public async Task<List<v_Movie>> LikedMovies(string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
-        {
-            var result = await _service.GetList(sort, null, 1, pageIndex, pageSize);
-            return result;
-        }
+        //[HttpGet("LikedMovies")]
+        //public async Task<List<v_Movie>> LikedMovies(string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
+        //{
+        //    var result = await _service.GetList(sort, null, 1, pageIndex, pageSize);
+        //    return result;
+        //}
         [HttpGet("MovieDetail")]
         public async Task<v_Movie> MovieDetail(int id)
         {
@@ -58,12 +59,12 @@ namespace LittleSexy.Api.Controllers
             var result = await _service.Actresses(sort, isLiked);
             return result;
         }
-        [HttpGet("LikedActresses")]
-        public async Task<List<v_Actress>> LikedActresses(string sort = "CreateTime")
-        {
-            var result = await _service.Actresses(sort, 1);
-            return result;
-        }
+        //[HttpGet("LikedActresses")]
+        //public async Task<List<v_Actress>> LikedActresses(string sort = "CreateTime")
+        //{
+        //    var result = await _service.Actresses(sort, 1);
+        //    return result;
+        //}
 
         [HttpGet("ActressDetail")]
         public async Task<v_Actress> ActressDetail(string actressName)
@@ -72,12 +73,12 @@ namespace LittleSexy.Api.Controllers
             return result;
         }
         
-        [HttpGet("ActressMovies")]
-        public async Task<List<v_Movie>> ActressMovies(string actressName, string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
-        {
-            var result = await _service.GetList(sort, actressName, null, pageIndex, pageSize);
-            return result;
-        }
+        //[HttpGet("ActressMovies")]
+        //public async Task<List<v_Movie>> ActressMovies(string actressName, string sort = "CreateTime", int pageIndex = 1, int pageSize = 20)
+        //{
+        //    var result = await _service.GetList(sort, actressName, null, pageIndex, pageSize);
+        //    return result;
+        //}
         [HttpPatch("LikingMovie")]
         public async Task<IActionResult> LikingMovie(int id, int isLiked)
         {
