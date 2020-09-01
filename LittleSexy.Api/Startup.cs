@@ -56,6 +56,7 @@ namespace LittleSexy.Api
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+            app.UseCors("LittleSexy.Cors");
             app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints =>

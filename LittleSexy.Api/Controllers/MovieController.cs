@@ -33,7 +33,7 @@ namespace LittleSexy.Api.Controllers
             }
 
         }
-        [HttpGet("MovieList")]
+        [HttpGet("List")]
         public async Task<List<v_Movie>> MovieList
             (string sort = "CreateTime", string actressName =null, int? isLiked = null, int pageIndex = 1, int pageSize =20 )
         {
@@ -46,7 +46,7 @@ namespace LittleSexy.Api.Controllers
         //    var result = await _service.GetList(sort, null, 1, pageIndex, pageSize);
         //    return result;
         //}
-        [HttpGet("MovieDetail")]
+        [HttpGet("Detail")]
         public async Task<v_Movie> MovieDetail(int id)
         {
             var result = await _service.DetailAsync(id);
