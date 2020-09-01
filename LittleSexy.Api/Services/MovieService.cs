@@ -17,7 +17,7 @@ namespace LittleSexy.Api.Services
     public class MovieService
     {
         public static IMemoryCache _memoryCache = new MemoryCache(new MemoryCacheOptions());
-        string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
+        string movieRootPath =  @"E:\publish\wwwroot\ftp\";
 
 
         public IConfiguration _configuration { get; }
@@ -142,6 +142,10 @@ namespace LittleSexy.Api.Services
             //默认值
             foreach (var item in LsMovies)
             {
+                if(item.Cover == null)
+                {
+                    continue;
+                }
                 if (!item.Cover.Contains(".jpg")) //视频不包含图片添加默认图片
                 {
                     item.Cover = "../images/default.jpg";

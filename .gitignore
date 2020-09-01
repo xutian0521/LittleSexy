@@ -6,3 +6,4 @@ Properties
 *.user
 node_modules
 *.mp4
+*.db
