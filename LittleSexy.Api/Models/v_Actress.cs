@@ -12,10 +12,19 @@ namespace LittleSexy.Api.Models
         /// 封面
         /// </summary>
         public string Cover { get; set; }
+        public string Background { get; set; }
         /// <summary>
         /// 多张写真
         /// </summary>
         public List<string> Portraits { get; set; } = new List<string>();
+        /// <summary>
+        /// 电影作品数量
+        /// </summary>
+        public int MovieCount { get; set; }
+        /// <summary>
+        /// 电影作品总观看次数
+        /// </summary>
+        public int TotalViewCount { get; set; }
         /// <summary>
         /// 日文名
         /// </summary>

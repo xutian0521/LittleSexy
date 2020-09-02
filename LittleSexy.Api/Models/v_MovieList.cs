@@ -27,10 +27,35 @@ namespace LittleSexy.Api.Models
         /// <value></value>
         public List<string> Sources { get; set; } = new List<string>();
         /// <summary>
+        /// 电影时长raw
+        /// </summary>
+        public TimeSpan Duration { get; set; }
+        /// <summary>
+        /// 电影时长format
+        /// </summary>
+        public string TotalTime { get; set; }
+        /// <summary>
+        /// 视频高度px
+        /// </summary>
+        public int Height { get; set; }
+        /// <summary>
+        /// 视频宽度px
+        /// </summary>
+        public int Width { get; set; }
+        /// <summary>
+        /// 显示分辨率 (1920 x 1080)
+        /// </summary>
+        public string DisPlayResolution { get; set; }
+
+        /// <summary>
         /// 番号
         /// </summary>
         /// <value></value>
         public string FanHao { get; set; }
+        /// <summary>
+        /// 发布时间
+        /// </summary>
+        public string PostedDate { get; set; }
         /// <summary>
         /// 日期
         /// </summary>
@@ -44,6 +69,7 @@ namespace LittleSexy.Api.Models
         /// 上次访问时间
         /// </summary>
         public DateTime LastAccessTime { get; set; }
+        public string LastAccess { get; set; }
         /// <summary>
         /// 封面
         /// </summary>
