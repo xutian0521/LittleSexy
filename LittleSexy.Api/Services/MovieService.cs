@@ -26,20 +26,24 @@ namespace LittleSexy.Api.Services
             _configuration = configuration;
         }
 
-        private Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> GetViewCountDict()
+        private Dictionary<string, DataValue> GetViewCountDict()
         {
-            Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> dict 
-                = new Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)>();
+            Dictionary<string, DataValue> dict 
+                = new Dictionary<string, DataValue>();
             var dt = SQLiteHelper.Query("SELECT * FROM Dict;");
             if (dt.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow item in dt.Tables[0].Rows)
                 {
+                    DataValue v = new DataValue();
                     string fanHao = item["Datakey"].ToString();
-                    int count = int.Parse(item["DataValue"].ToString());
-                    int isLiked = int.Parse(item["IsLiked"].ToString());
-                    DateTime LastAccessTime = DateTime.Parse(item["LastAccessTime"].ToString());
-                    dict.Add(fanHao, (count, isLiked, LastAccessTime));
+                    v.count = int.Parse(item["DataValue"].ToString());
+                    v.isLiked = int.Parse(item["IsLiked"].ToString());
+                    v.LastAccessTime = DateTime.Parse(item["LastAccessTime"].ToString());
+                    v.Height = int.Parse( item["Height"].ToString());
+                    v.Width = int.Parse(item["Width"].ToString());
+                    v.TotalTime =item["TotalTime"].ToString();
+                    dict.Add(fanHao, v);
                 }
             }
             return dict;
@@ -119,7 +123,7 @@ namespace LittleSexy.Api.Services
         {
 
             //播放量字典
-            Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> dict = this.GetViewCountDict();
+            Dictionary<string, DataValue> dict = this.GetViewCountDict();
             string ApiHost = _configuration.GetValue<string>("ApiHost");
             string apiHostExt = ApiHost + @"/ftp/";
 
@@ -155,14 +159,24 @@ namespace LittleSexy.Api.Services
                         {
                             var Source = apiHostExt + item.FullName.Replace(movieRootPath, "")?.Replace("\\", "/");
                             movie.Sources.Add(Source);
-                            VideoEncoder.Encoder enc = new VideoEncoder.Encoder();
-                            //ffmpeg.exe的路径，程序会在执行目录（....FFmpeg测试\bin\Debug）下找此文件，
-                            enc.FFmpegPath = "ffmpeg.exe";
-                            //视频路径
-                            VideoEncoder.VideoFile videoFile = new VideoEncoder.VideoFile(item.FullName);
-                            enc.GetVideoInfo(videoFile);
-
-                            _totalTime = _totalTime.Add(videoFile.Duration);
+                            VideoEncoder.VideoFile videoFile = null;
+                            if(!dict.Keys.Any(x => x == FanHao ))
+                            {
+                                int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{FanHao}','0');");
+                                dict.Add(FanHao, new DataValue(){ LastAccessTime = DateTime.Now});
+                            }
+                            bool isffmpeg = dict[FanHao].Height == 0;
+                            if(isffmpeg)
+                            {
+                                VideoEncoder.Encoder enc = new VideoEncoder.Encoder();
+                                //ffmpeg.exe的路径，程序会在执行目录（....FFmpeg测试\bin\Debug）下找此文件，
+                                enc.FFmpegPath = "ffmpeg.exe";
+                                //视频路径
+                                videoFile = new VideoEncoder.VideoFile(item.FullName);
+                                enc.GetVideoInfo(videoFile);
+                                _totalTime = _totalTime.Add(videoFile.Duration); //总时长
+                                int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET TotalTime='{string.Format("{0:00}:{1:00}:{2:00}", (int)_totalTime.TotalHours, _totalTime.Minutes, _totalTime.Seconds)}' WHERE DataKey = '{FanHao}'; ");
+                            }
                             if (!LsMovies.Contains(movie))
                             {
                                 movie.Id = LsMovies.Count + 1;
@@ -175,16 +189,27 @@ namespace LittleSexy.Api.Services
                                 movie.ViewCount = dict.Any(x => x.Key == FanHao) ? dict[FanHao].count : 0;
                                 movie.IsLiked = dict.Any(x => x.Key == FanHao) ? dict[FanHao].isLiked : 0;
                                 movie.Actress = actress;
+                                if(isffmpeg)
+                                {
+                                    //mpeg信息
+                                    movie.Height = videoFile.Height;
+                                    movie.Width = videoFile.Width;
+                                    movie.DisPlayResolution = videoFile.Width + "x" + videoFile.Height;
+                                    int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET Height='{videoFile.Height}',Width='{videoFile.Width}' WHERE DataKey = '{FanHao}'; ");
 
-                                //mpeg信息
-
-                                movie.Height = videoFile.Height;
-                                movie.Width = videoFile.Width;
-                                movie.DisPlayResolution = videoFile.Width + "x" + videoFile.Height;
+                                }
+                                else
+                                {
+                                    movie.Height = dict[FanHao].Height;
+                                    movie.Width = dict[FanHao].Width;
+                                    movie.DisPlayResolution = movie.Width + "x" + movie.Height;
+                                }
                                 LsMovies.Add(movie);
+                                
                             }
                             movie.TotalTime = string.Format("{0:00}:{1:00}:{2:00}", (int)_totalTime.TotalHours, _totalTime.Minutes, _totalTime.Seconds);
                             movie.Duration = _totalTime;
+                            
 
                         }
                         if (ext == ".jpg" || ext == ".png") //图片
@@ -227,7 +252,7 @@ namespace LittleSexy.Api.Services
         {
             v_Movie movie = new v_Movie();
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
-            Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> dict = this.GetViewCountDict();
+            Dictionary<string, DataValue> dict = this.GetViewCountDict();
             List<v_Movie> movieLists = new List<v_Movie>();
 
             if (_cache != null && _cache.Count > 0)
@@ -261,7 +286,7 @@ namespace LittleSexy.Api.Services
             var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
             if (_cache != null && _cache.Count > 0)
             {
-                Task.Run(() => { this.GetActressesInternal( isLiked); });
+                //Task.Run(() => { this.GetActressesInternal( isLiked); });
                 return _cache;
             }
             var list = await this.GetActressesInternal( isLiked); ;
@@ -280,7 +305,7 @@ namespace LittleSexy.Api.Services
         private async Task<List<v_Actress>> GetActressesInternal( int? isLiked)
         {
             //播放量字典
-            Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> dict = this.GetViewCountDict();
+            Dictionary<string, DataValue> dict = this.GetViewCountDict();
             string ApiHost = _configuration.GetValue<string>("ApiHost");
             string apiHostExt = ApiHost + @"/ftp/";
             List<v_Actress> lsActress = new List<v_Actress>();
@@ -330,7 +355,7 @@ namespace LittleSexy.Api.Services
         {
             v_Actress actress = new v_Actress();
             var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
-            Dictionary<string, (int count, int isLiked, DateTime LastAccessTime)> dict = this.GetViewCountDict();
+            Dictionary<string, DataValue> dict = this.GetViewCountDict();
             List<v_Movie> movieLists = new List<v_Movie>();
 
             if (_cache != null && _cache.Count > 0)
