@@ -49,23 +49,31 @@ namespace LittleSexy.Api.Services
             return dict;
         }
 
-        public async Task<bool> UpdateAllMovies()
+        public  bool UpdateAllMovies()
         {
-            var list = await this.GetListInternal(null, null);
+            var list = this.GetListInternal(null, null);
             return list.Count > 0;
 
         }
-        public async Task<List<v_Movie>> GetList(string sort, string actressName, int? isLiked, int pageIndex, int pageSize)
+        public List<v_Movie> GetList(string sort, string actressName, int? isLiked, int pageIndex, int pageSize)
         {
             //List<v_Movie> list = new List<v_Movie>();
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList" + actressName + isLiked);
             if (_cache != null && _cache.Count > 0)
             {
                 Task.Run(() => { this.GetListInternal(actressName, isLiked); });
+                if (sort == SortType.CreateTime.ToString())
+                {
+                    _cache = _cache.OrderByDescending(x => x.CreationTime).ToList();
+                }
+                else if(sort == SortType.ViewCount.ToString())
+                {
+                    _cache = _cache.OrderByDescending(y => y.ViewCount).ToList();
+                }
                 return _cache;
             }
 
-            List<v_Movie> list = await this.GetListInternal(actressName, isLiked);
+            List<v_Movie> list = this.GetListInternal(actressName, isLiked);
 
             //排序
             if (sort == SortType.CreateTime.ToString())
@@ -119,7 +127,7 @@ namespace LittleSexy.Api.Services
             }
             return format;
         }
-        private async Task<List<v_Movie>> GetListInternal(string actressName, int? isLiked)
+        private List<v_Movie> GetListInternal(string actressName, int? isLiked)
         {
 
             //播放量字典
@@ -165,7 +173,7 @@ namespace LittleSexy.Api.Services
                                 int row = SQLiteHelper.ExecuteNonQuery($"INSERT INTO Dict ( DataKey,DataValue) VALUES ('{FanHao}','0');");
                                 dict.Add(FanHao, new DataValue(){ LastAccessTime = DateTime.Now});
                             }
-                            bool isffmpeg = dict[FanHao].Height == 0;
+                            bool isffmpeg = dict[FanHao].TotalTime == "0";
                             if(isffmpeg)
                             {
                                 VideoEncoder.Encoder enc = new VideoEncoder.Encoder();
@@ -176,6 +184,10 @@ namespace LittleSexy.Api.Services
                                 enc.GetVideoInfo(videoFile);
                                 _totalTime = _totalTime.Add(videoFile.Duration); //总时长
                                 int row = SQLiteHelper.ExecuteNonQuery($"UPDATE Dict SET TotalTime='{string.Format("{0:00}:{1:00}:{2:00}", (int)_totalTime.TotalHours, _totalTime.Minutes, _totalTime.Seconds)}' WHERE DataKey = '{FanHao}'; ");
+                            }
+                            else
+                            {
+                                _totalTime = dict.Any(x => x.Key == FanHao) ? TimeSpan.Parse( dict[FanHao].TotalTime) : new TimeSpan();
                             }
                             if (!LsMovies.Contains(movie))
                             {
@@ -248,7 +260,7 @@ namespace LittleSexy.Api.Services
             return LsMovies;
         }
 
-        public async Task<v_Movie> DetailAsync(int id)
+        public v_Movie DetailAsync(int id)
         {
             v_Movie movie = new v_Movie();
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
@@ -281,7 +293,7 @@ namespace LittleSexy.Api.Services
             return movie;
         }
 
-        public async Task<List<v_Actress>> Actresses(string sort, int? isLiked)
+        public List<v_Actress> Actresses(string sort, int? isLiked)
         {
             var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
             if (_cache != null && _cache.Count > 0)
@@ -289,7 +301,7 @@ namespace LittleSexy.Api.Services
                 //Task.Run(() => { this.GetActressesInternal( isLiked); });
                 return _cache;
             }
-            var list = await this.GetActressesInternal( isLiked); ;
+            var list = this.GetActressesInternal( isLiked); ;
             //排序
             if (sort == SortType.CreateTime.ToString())
             {
@@ -302,7 +314,7 @@ namespace LittleSexy.Api.Services
             return list;
         }
 
-        private async Task<List<v_Actress>> GetActressesInternal( int? isLiked)
+        private List<v_Actress> GetActressesInternal( int? isLiked)
         {
             //播放量字典
             Dictionary<string, DataValue> dict = this.GetViewCountDict();
@@ -351,7 +363,7 @@ namespace LittleSexy.Api.Services
             return lsActress;
         }
 
-        public async Task<v_Actress> ActressDetails(string actressName)
+        public v_Actress ActressDetails(string actressName)
         {
             v_Actress actress = new v_Actress();
             var _cache = _memoryCache.Get<List<v_Actress>>("ActressTempList");
@@ -380,7 +392,7 @@ namespace LittleSexy.Api.Services
             return actress;
         }
 
-        public async Task<bool> LikingMovie(int id, int isLiked)
+        public bool LikingMovie(int id, int isLiked)
         {
             var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList");
             var m = _cache.Where(y => y.Id == id).FirstOrDefault();
@@ -402,7 +414,7 @@ namespace LittleSexy.Api.Services
             return isSuccess;
         }
 
-        public async Task<bool> LikingActress(string actressName, int isLiked)
+        public bool LikingActress(string actressName, int isLiked)
         {
             var dt = SQLiteHelper.Query($"SELECT * FROM Dict  WHERE DataKey='{actressName}'");
             bool isSuccess = false;

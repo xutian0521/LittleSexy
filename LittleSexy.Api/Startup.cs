@@ -7,6 +7,8 @@ using System.IO;
 using LittleSexy.Api.Util;
 using LittleSexy.Api.Services;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.StaticFiles;
+using System;
 
 namespace LittleSexy.Api
 {
@@ -40,7 +42,7 @@ namespace LittleSexy.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -57,7 +59,17 @@ namespace LittleSexy.Api
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
             app.UseCors("LittleSexy.Cors");
-            app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            ContentTypeProvider = serviceProvider.GetService<IContentTypeProvider>(),
+            OnPrepareResponse = ctx =>
+            {
+                if (!env.IsDevelopment())
+                {
+
+                }
+            }
+        });
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

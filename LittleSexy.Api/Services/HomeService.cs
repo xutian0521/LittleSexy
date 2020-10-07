@@ -17,7 +17,7 @@ namespace LittleSexy.Api.Services
         {
             _configuration = configuration;
         }
-        public async Task<List<v_PageImages>> GetBnners()
+        public List<v_PageImages> GetBnners()
         {
             List<v_PageImages> vmls = new List<v_PageImages>();
             string currentPath = Directory.GetCurrentDirectory();

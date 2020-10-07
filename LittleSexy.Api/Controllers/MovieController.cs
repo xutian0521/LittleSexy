@@ -20,9 +20,9 @@ namespace LittleSexy.Api.Controllers
             _service = movieService;
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateAllMovies()
+        public IActionResult UpdateAllMovies()
         {
-            var result = await _service.UpdateAllMovies();
+            var result =  _service.UpdateAllMovies();
             if (result)
             {
                 return Accepted();
@@ -34,38 +34,38 @@ namespace LittleSexy.Api.Controllers
 
         }
         [HttpGet("List")]
-        public async Task<List<v_Movie>> MovieList
+        public  List<v_Movie> MovieList
             (string sort = "CreateTime", string actressName =null, int? isLiked = null, int pageIndex = 1, int pageSize =20 )
         {
-            var result = await _service.GetList( sort, actressName, isLiked, pageIndex, pageSize);
+            var result = _service.GetList( sort, actressName, isLiked, pageIndex, pageSize);
             return result;
         }
 
         [HttpGet("Detail")]
-        public async Task<v_Movie> MovieDetail(int id)
+        public v_Movie MovieDetail(int id)
         {
-            var result = await _service.DetailAsync(id);
+            var result = _service.DetailAsync(id);
             return result;
         }
 
         [HttpGet("Actresses")]
-        public async Task<List<v_Actress>> Actresses(string sort = "CreateTime", int? isLiked = null)
+        public List<v_Actress> Actresses(string sort = "CreateTime", int? isLiked = null)
         {
-            var result = await _service.Actresses(sort, isLiked);
+            var result = _service.Actresses(sort, isLiked);
             return result;
         }
 
         [HttpGet("ActressDetail")]
-        public async Task<v_Actress> ActressDetail(string actressName)
+        public v_Actress ActressDetail(string actressName)
         {
-            var result = await _service.ActressDetails(actressName);
+            var result = _service.ActressDetails(actressName);
             return result;
         }
         
         [HttpPatch("LikingMovie")]
-        public async Task<IActionResult> LikingMovie(int id, int isLiked)
+        public IActionResult LikingMovie(int id, int isLiked)
         {
-            var result = await _service.LikingMovie(id, isLiked);
+            var result = _service.LikingMovie(id, isLiked);
             if (result)
             {
                 return Accepted();
@@ -76,9 +76,9 @@ namespace LittleSexy.Api.Controllers
             }
         }
         [HttpPatch("LikingActress")]
-        public async Task<IActionResult> LikingActress(string actressName, int isLiked)
+        public IActionResult LikingActress(string actressName, int isLiked)
         {
-            var result = await _service.LikingActress(actressName, isLiked);
+            var result =  _service.LikingActress(actressName, isLiked);
             if (result)
             {
                 return Accepted();

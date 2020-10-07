@@ -20,9 +20,9 @@ namespace LittleSexy.Api.Controllers
             _homeService = homeService;
         }
         [HttpGet("Banner")]
-        public async Task<List<v_PageImages>> Banner(int pageId)
+        public List<v_PageImages> Banner(int pageId)
         {
-            var list = await _homeService.GetBnners();
+            var list = _homeService.GetBnners();
             return list;
         }
     }
