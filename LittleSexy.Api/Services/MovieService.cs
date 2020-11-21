@@ -17,7 +17,7 @@ namespace LittleSexy.Api.Services
     public class MovieService
     {
         public static IMemoryCache _memoryCache = new MemoryCache(new MemoryCacheOptions());
-        string movieRootPath = Directory.GetCurrentDirectory() + @"\wwwroot\ftp\";
+        string movieRootPath {get { return _configuration.GetValue<string>("moviePath"); } }
 
 
         public IConfiguration _configuration { get; }

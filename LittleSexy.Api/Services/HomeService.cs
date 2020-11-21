@@ -19,9 +19,10 @@ namespace LittleSexy.Api.Services
         }
         public List<v_PageImages> GetBnners()
         {
+            string bannerPath = _configuration.GetValue<string>("bannerPath");
             List<v_PageImages> vmls = new List<v_PageImages>();
             string currentPath = Directory.GetCurrentDirectory();
-            DirectoryInfo dir = new DirectoryInfo(currentPath + "/wwwroot/images/homeBanner/");
+            DirectoryInfo dir = new DirectoryInfo(bannerPath);
             var files = dir.GetFiles();
             string imageServer = _configuration.GetValue<string>("imageServer") + "/homeBanner/";
             foreach (var item in files)
