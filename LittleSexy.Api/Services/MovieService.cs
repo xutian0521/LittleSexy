@@ -132,8 +132,7 @@ namespace LittleSexy.Api.Services
 
             //播放量字典
             Dictionary<string, DataValue> dict = this.GetViewCountDict();
-            string ApiHost = _configuration.GetValue<string>("ApiHost");
-            string apiHostExt = ApiHost + @"/ftp/";
+            string movieServer = _configuration.GetValue<string>("movieServer");
 
             List<v_Movie> LsMovies = new List<v_Movie>();
             var dirs = new DirectoryInfo(movieRootPath).GetDirectories();
@@ -146,7 +145,7 @@ namespace LittleSexy.Api.Services
                 foreach (var photoItem in actressFiles)
                 {
                     string picRelativePath = photoItem.FullName.Replace(movieRootPath, "");
-                    string path = apiHostExt + picRelativePath?.Replace("\\", "/");
+                    string path = movieServer + picRelativePath?.Replace("\\", "/");
                     actress.Portraits.Add(path);
                     if (string.IsNullOrEmpty(actress.Cover))
                     {
@@ -165,7 +164,7 @@ namespace LittleSexy.Api.Services
                         var ext = item.Extension;
                         if (ext == ".mp4" || ext == ".webm") //视频
                         {
-                            var Source = apiHostExt + item.FullName.Replace(movieRootPath, "")?.Replace("\\", "/");
+                            var Source = movieServer + item.FullName.Replace(movieRootPath, "")?.Replace("\\", "/");
                             movie.Sources.Add(Source);
                             VideoEncoder.VideoFile videoFile = null;
                             if(!dict.Keys.Any(x => x == FanHao ))
@@ -231,11 +230,11 @@ namespace LittleSexy.Api.Services
                             if (item.Name.Contains(FanHao))
                             {
                                 movie.Title = Path.GetFileNameWithoutExtension(item.Name);
-                                movie.Cover = apiHostExt + picRelativePath;
+                                movie.Cover = movieServer + picRelativePath;
                             }
                             else
                             {
-                                movie.Preview.Add(apiHostExt + picRelativePath);
+                                movie.Preview.Add(movieServer + picRelativePath);
                             }
                         }
                     }
@@ -318,8 +317,7 @@ namespace LittleSexy.Api.Services
         {
             //播放量字典
             Dictionary<string, DataValue> dict = this.GetViewCountDict();
-            string ApiHost = _configuration.GetValue<string>("ApiHost");
-            string apiHostExt = ApiHost + @"/ftp/";
+            string movieServer = _configuration.GetValue<string>("movieServer");
             List<v_Actress> lsActress = new List<v_Actress>();
 
             var actressDirs = new DirectoryInfo(movieRootPath).GetDirectories();
@@ -340,7 +338,7 @@ namespace LittleSexy.Api.Services
                 foreach (var photoItem in actressFiles)
                 {
                     string picRelativePath = photoItem.FullName.Replace(movieRootPath, "");
-                    string path = apiHostExt + picRelativePath?.Replace("\\", "/");
+                    string path = movieServer + picRelativePath?.Replace("\\", "/");
                     actress.Portraits.Add(path);
                     if (string.IsNullOrEmpty(actress.Cover) && photoItem.FullName.ToLower().Contains("cover"))
                     {

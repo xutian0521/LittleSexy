@@ -20,7 +20,7 @@ namespace LittleSexy.Api
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
-                .UseStartup<Startup>().UseUrls("http://*:80")
+                .UseStartup<Startup>().UseUrls("http://*:6001")
                 .Build();
     }
 }

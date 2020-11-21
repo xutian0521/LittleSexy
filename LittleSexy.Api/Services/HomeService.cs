@@ -23,10 +23,10 @@ namespace LittleSexy.Api.Services
             string currentPath = Directory.GetCurrentDirectory();
             DirectoryInfo dir = new DirectoryInfo(currentPath + "/wwwroot/images/homeBanner/");
             var files = dir.GetFiles();
-            string host = _configuration.GetValue<string>("ApiHost") + "/images/homeBanner/";
+            string imageServer = _configuration.GetValue<string>("imageServer") + "/homeBanner/";
             foreach (var item in files)
             {
-                vmls.Add(new v_PageImages { ImagePath = host + item.Name });
+                vmls.Add(new v_PageImages { ImagePath = imageServer + item.Name });
             }
             return vmls;
         }
