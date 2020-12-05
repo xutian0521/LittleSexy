@@ -186,7 +186,16 @@ namespace LittleSexy.Api.Services
                             }
                             else
                             {
-                                _totalTime = dict.Any(x => x.Key == FanHao) ? TimeSpan.Parse( dict[FanHao].TotalTime) : new TimeSpan();
+                                if(dict.Any(x => x.Key == FanHao) )
+                                {
+                                    TimeSpan.TryParse( dict[FanHao].TotalTime, out TimeSpan t);
+                                    _totalTime = t;
+                                }
+                                else
+                                {
+                                    _totalTime = new TimeSpan();
+                                }
+                                
                             }
                             if (!LsMovies.Contains(movie))
                             {
