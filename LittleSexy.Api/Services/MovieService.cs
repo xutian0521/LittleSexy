@@ -58,7 +58,7 @@ namespace LittleSexy.Api.Services
         public List<v_Movie> GetList(string sort, string actressName, int? isLiked, int pageIndex, int pageSize)
         {
             //List<v_Movie> list = new List<v_Movie>();
-            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList" + actressName + isLiked);
+            var _cache = _memoryCache.Get<List<v_Movie>>("movieTempList" + actressName + isLiked) ;
             if (_cache != null && _cache.Count > 0)
             {
                 Task.Run(() => { this.GetListInternal(actressName, isLiked); });
@@ -70,10 +70,10 @@ namespace LittleSexy.Api.Services
                 {
                     _cache = _cache.OrderByDescending(y => y.ViewCount).ToList();
                 }
-                return _cache;
+                return _cache.Skip(pageSize*(pageIndex -1)).Take(pageSize).ToList();
             }
 
-            List<v_Movie> list = this.GetListInternal(actressName, isLiked);
+            List<v_Movie> list = this.GetListInternal(actressName, isLiked).Skip(pageSize*(pageIndex -1)).Take(pageSize).ToList();
 
             //排序
             if (sort == SortType.CreateTime.ToString())

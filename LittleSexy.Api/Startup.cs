@@ -70,6 +70,7 @@ namespace LittleSexy.Api
                 }
             }
         });
+        app.UseMiddleware<BasicMiddleWare>();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
