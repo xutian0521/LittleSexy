@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CXuesong.Shims.VisualBasic.Devices" Version="0.3.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.113.1" />
   </ItemGroup>
 

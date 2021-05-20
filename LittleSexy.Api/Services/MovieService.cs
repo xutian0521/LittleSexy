@@ -10,6 +10,7 @@ using System.Linq;
 using System.Data;
 using LittleSexy.Api.Util;
 using LittleSexy.Api.Models;
+using CXuesong.Shims.VisualBasic.Devices;
 
 namespace LittleSexy.Api.Services
 {
@@ -157,6 +158,7 @@ namespace LittleSexy.Api.Services
                 {
                     TimeSpan _totalTime = new TimeSpan();
                     var fanHaoFiles = fanHaoItem.GetFiles();
+                    string FanHaoRaw = fanHaoItem.Name;
                     string FanHao = fanHaoItem.Name.TrimEnd("-C".ToCharArray());
                     v_Movie movie = new v_Movie();
                     foreach (var item in fanHaoFiles)
@@ -229,7 +231,44 @@ namespace LittleSexy.Api.Services
                             }
                             movie.TotalTime = string.Format("{0:00}:{1:00}:{2:00}", (int)_totalTime.TotalHours, _totalTime.Minutes, _totalTime.Seconds);
                             movie.Duration = _totalTime;
-                            
+
+                            // //FileInfo fi = new FileInfo(item.FullName); //xx/xx/aa.rar
+                            // var rnj= fanHaoFiles.Where(x =>Path.GetExtension( x.Name) == ".jpg" && x.Name.Contains(FanHao)).FirstOrDefault();
+                            // //fi.MoveTo(Path.GetFileNameWithoutExtension(rnj.FullName) + ".mp4"); //xx/xx/xx.rar
+                            // if(rnj != null)
+                            // {
+                            //     if(item.FullName.EndsWith("-A.mp4") || item.FullName.EndsWith("-B.mp4"))
+                            //     {
+                            //         Console.WriteLine( "$AB集$  " + item.FullName );
+                            //     }
+                            //     else
+                            //     {
+                            //         if(FanHaoRaw.EndsWith("-C"))
+                            //         {
+                            //             Computer MyComputer = new Computer();
+                            //             string newName = FanHaoRaw + Path.GetFileNameWithoutExtension(rnj.FullName).Replace(FanHaoRaw, "").Replace(FanHao, "") + ".mp4";
+                            //             MyComputer.FileSystem.RenameFile(item.FullName, newName);
+                            //             string newJpgName = newName.Replace(".mp4", "") + ".jpg";
+                            //             MyComputer.FileSystem.RenameFile(rnj.FullName, newJpgName);
+                            //             Console.WriteLine( "#中文#  " + item.FullName + " => " + newName);
+                            //             Console.WriteLine( "#中文图片#  " + rnj.FullName + " => " + newJpgName);
+                            //         }
+                            //         else
+                            //         {
+                            //             Computer MyComputer = new Computer();
+                            //             string newName = Path.GetFileNameWithoutExtension(rnj.FullName) + ".mp4";
+                            //             MyComputer.FileSystem.RenameFile(item.FullName, newName);
+                            //             Console.WriteLine( item.FullName + " => " + newName);
+                            //         }
+                            //     }
+                                
+
+                            // }
+                            // else
+                            // {
+                            //     Console.WriteLine("[失败]" + item.FullName);
+                            // }
+
 
                         }
                         if (ext == ".jpg" || ext == ".png") //图片
